@@ -1,0 +1,65 @@
+<!doctype html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title></title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width">
+    <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+
+        <!-- build:css(.tmp) styles/main.css -->
+        <link rel="stylesheet" href="styles/main.css">
+        <!-- endbuild -->
+</head>
+  <body  ng-app="f4DirectivesApp" >
+    <!--[if lt IE 7]>
+      <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+    <![endif]-->
+
+    <!--[if lt IE 9]>
+      <script src="bower_components/es5-shim/es5-shim.js"></script>
+      <script src="bower_components/json3/lib/json3.min.js"></script>
+    <![endif]-->
+    
+    <div ng-controller="mainController">
+    <!-- Add your site or application content here -->
+    <div class="panel">
+    <label>Person name: {{selectedPerson.name}}</label>
+    	<!-- dropdown button -->
+    	<mp-dropdown dropdown-title="Person" dropdown-list="dropdownListData" dropdown-model="selectedPerson" dropdown-var="va" dropdown-repeat-text="va.name" dropdown-button-class="button dropdown" ></mp-dropdown>
+	</div>
+	<div class="panel">
+	<label> Content Dropdown</label>
+	  <mp-dropdown-content dropdown-title="404 Content" dropdown-list="Roles" dropdown-src="'404_content.html'" dropdown-content-class="f-dropdown content medium"   dropdown-button-class="button dropdown" d></mp-dropdown-content>	
+	</div>
+    </div>
+    <!-- Google Analytics: change UA-XXXXX-X to be your site's ID -->
+     <script>
+       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+       (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+       m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+       })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+       ga('create', 'UA-XXXXX-X');
+       ga('send', 'pageview');
+    </script>
+
+    <script src="bower_components/jquery/jquery.js"></script>
+    <script src="bower_components/angular/angular.js"></script>
+	<script src="bower_components/foundation/js/foundation/foundation.js"></script>
+	<script src="bower_components/foundation/js/foundation/foundation.placeholder.js"></script>
+	<script src="bower_components/foundation/js/foundation/foundation.dropdown.js"></script>
+        <!-- build:js({.tmp,app}) scripts/scripts.js -->
+        <script src="scripts/f4_directives.js"></script>
+        <script src="scripts/app.js"></script>
+        <!-- endbuild -->
+        
+    <script>
+    	$(document).foundation();
+    </script>
+</body>
+</html>
