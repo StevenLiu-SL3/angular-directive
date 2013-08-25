@@ -396,21 +396,23 @@ mpclearingDirective = ($parse,$compile,$timeout)->
         else
           value=$scope.clearingImageList
           makeTemplate(uniqAId,value,false) if value
-    
         $scope.$watch "clearingImageList", (newValue,oldValue)->
           if newValue != oldValue
             #$element.remove()
             uniqAId=getRandomName("clearing_")
       
             makeTemplate(uniqAId,newValue,true) 
-            setTimeout($(document).foundation('clearing'),0)
+            setTimeout ()->
+                $(document).foundation('clearing')
+             ,0
    
         
          
     ]
     link: (scope, iElement, iAttrs,$timeout)->
-      $timeout ()->
-        setTimeout($(document).foundation('clearing'),0)
+      setTimeout ()->
+        $(document).foundation('clearing')
+      ,0
    
       return ($scope,iElement,iAttrs,controller)->
         return
