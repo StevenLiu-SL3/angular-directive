@@ -42,12 +42,37 @@
     	<label>Clearing</label>
     	<div mp-clearing clearing-image-list="imageListData"></div>
     </div>
+    <button ng-click="onChangeImageList()">Toggle Image List</button>
+    
     <div class="panel">
 	<label>Alert Box</label>
 	  <mp-alert-box alert-content="{{alertContent}}" ></mp-alert-box>	
 	</div>
 	
-    <button ng-click="onChangeImageList()">Toggle Image List</button>
+      <div class="panel">
+	<label>Section Panels</label>
+	<div class="section-contener accordion" data-section="accordion">
+		<mp-section section-href="#" section-content="<p>Section One</p>" section-title="Section 1"></mp-section>
+		<mp-section section-href="#" section-content="<p>Section Two</p>" section-title="Section 2"></mp-section>
+
+	</div>
+	<div class="section-container accordion" data-section="accordion">
+  <section>
+    <p class="title" data-section-title><a href="#">Section 1</a></p>
+    <div class="content" data-section-content>
+      <p>Content of section 1.</p>
+    </div>
+  </section>
+  <section>
+    <p class="title" data-section-title><a href="#">Section 2</a></p>
+    <div class="content" data-section-content>
+      <p>Content of section 2.</p>
+    </div>
+  </section>
+</div>
+	  <mp-alert-box alert-content="{{alertContent}}" ></mp-alert-box>	
+	</div>
+	
     </div>
    <!--
     <ul class="clearing-thumbs" data-clearing="abc123">
@@ -77,6 +102,7 @@
 	<script src="bower_components/foundation/js/foundation/foundation.dropdown.js"></script>
 	<script src="bower_components/foundation/js/foundation/foundation.clearing.js"></script>
 	<script src="bower_components/foundation/js/foundation/foundation.alerts.js"></script>
+	<script src="bower_components/foundation/js/foundation/foundation.section.js"></script>
     <script src="bower_components/angular/angular.js"></script>
 	
         <!-- build:js({.tmp,app}) scripts/scripts.js -->

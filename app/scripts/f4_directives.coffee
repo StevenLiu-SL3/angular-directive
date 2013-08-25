@@ -450,7 +450,111 @@ mpalertBoxesDirective = ($parse,$compile,$timeout)->
   return directiveDefinitionObject    
 
 
+###
+mpAlertBox
+
+###
+mpsectionDirective = ($parse,$compile,$timeout)->
+  directiveDefinitionObject = {
+    scope: {
+        sectionTitleClass: '@'
+        sectionTitle: '@'
+        sectionContentClass: '@'
+        sectionHref: '@'
+        sectionContent: '@'
+        sectionIncludeSrc: '@'    
+        sectionRepeat: '@'   
+    }
+    priority: 0
+    
+    replace: true
+    trsnaclude: false
+    restrict: 'AE'
+    controller: [
+      "$scope"
+      "$element"
+      "$attrs"
+      "$transclude"
+      "$timeout"
+      "mpF4Helper"
+      ($scope,$element,$attrs,$transclude,$timeout,mpF4Helper)->
+        uniqAId=mpF4Helper.getRandomName("clearing_")
+        divUId = mpF4Helper.getRandomName("clearingdiv_")
+        if $scope.sectionTitleClass
+          sectionTitleClass=$scope.sectionTitleClass
+        else
+          sectionTitleClass="title"
+        if $scope.sectionTitle
+          sectionTitle=$scope.sectionTitle
+        else
+          sectionTitle="Section Title"
+        if $scope.sectionContentClass
+          sectionContentClass=$scope.sectionContentClass
+        else
+          sectionContentClass="content"
+        if $scope.sectionHref
+          sectionHref=$scope.sectionHref
+        else
+          sectionHref=""
+        if $scope.sectionContent
+          sectionContent=$scope.sectionContent
+        else
+          sectionContent="<p>Section Content</p>"
+        
+        if $scope.sectionIncludeSrc
+          sectionIncludeSrc=$scope.sectionIncludeSrc
+        else
+          sectionIncludeSrc=""
+      
+      
+        
+        makeTemplate= (uid,value,breplace)->
+          stemplate1="<div>"
+          stemplate2="<section>"
+          stemplate3='<p class="' + sectionTitleClass + 
+            '" data-section-title><a href="' + sectionHref + '">' + sectionTitle + '</a></p>';
+          if sectionIncludeSrc != ""
+            sectionContent='<ng-include src="' + sectionIncludeSrc + '"></ng-include>'  
+          stemplate4='<div class="' + sectionContentClass + '" data-section-content>' + sectionContent + '</div>'  
+          stemplate5="</section>"
+          stemplate6="</div>"
+          if !breplace
+            stemplate=stemplate1+stemplate2+stemplate3+stemplate4+stemplate5+stemplate6
+            #stemplate=stemplate2+stemplate3+stemplate4+stemplate5
+            $element.append($compile(stemplate)($scope))
+          else
+            stemplate=stemplate2+smiddle+stemplate3+stemplate4+stemplate5
+            $element.find('div').remove()
+            #$element.remove()
+            $element.append($compile(stemplate)($scope))
+            
+        makeTemplate(uniqAId,null,false)
+        $scope.$watch "sectionContent", (newValue,oldValue)->
+          if newValue != oldValue
+            #$element.remove()
+            uniqAId=mpF4Helper.getRandomName("section_")
+      
+            makeTemplate(uniqAId,newValue,true) 
+            setTimeout ()->
+                $(document).foundation('section')
+             ,0
+   
+        
+         
+    ]
+    link: (scope, iElement, iAttrs,$timeout)->
+      setTimeout ()->
+        $(document).foundation('section')
+      ,0
+   
+      return ($scope,iElement,iAttrs,controller)->
+        return
+        
+  }
+  return directiveDefinitionObject    
+
 myF4_DirectiveApp.directive 'mpDropdown', mpdropdownDirective
 myF4_DirectiveApp.directive 'mpDropdownContent', mpdropdownContentDirective
 myF4_DirectiveApp.directive 'mpClearing', mpclearingDirective
 myF4_DirectiveApp.directive 'mpAlertBox', mpalertBoxesDirective
+myF4_DirectiveApp.directive 'mpSection', mpsectionDirective
