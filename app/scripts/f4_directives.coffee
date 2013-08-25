@@ -403,14 +403,15 @@ mpclearingDirective = ($parse,$compile,$timeout)->
             uniqAId=getRandomName("clearing_")
       
             makeTemplate(uniqAId,newValue,true) 
-            setInterval($(document).foundation('clearing'),0)
+            setTimeout($(document).foundation('clearing'),0)
    
         
          
     ]
     link: (scope, iElement, iAttrs,$timeout)->
-      setInterval($(document).foundation('clearing'),0)
-          
+      $timeout ()->
+        setTimeout($(document).foundation('clearing'),0)
+   
       return ($scope,iElement,iAttrs,controller)->
         return
         
