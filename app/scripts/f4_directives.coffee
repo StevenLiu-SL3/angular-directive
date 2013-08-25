@@ -55,12 +55,7 @@ mpdropdownDirective = ($parse,$compile,$timeout)->
     p2=randomString 4, '0123456789'
     newname=prefix+p1+p2
     return newname
-  selectItem = ()->
-    i=0
-    return 
-  hashKey = (obj)->
-    i=0
-    return  
+   
   directiveDefinitionObject = {
     scope: {
         dropdownModel: '='
@@ -121,32 +116,8 @@ mpdropdownDirective = ($parse,$compile,$timeout)->
         stemplate2=stemplate2.replace("{0}",uniqAId)       
         stemplate3='<li ><a data-ng-click="{0}">{1}</a></li>'
         stemplate4='</ul>'+'</div>'
-        stemplate=""
-        resolved=$scope.dropdownList?.$resolved?
-        if type(resolved) is not undefined and resolved==false
-          $scope.dropdownList.$promise.then (value)->
-            i=0
-            iLength=value.length
-            smiddle=""
-            while i<iLength
-              v=value[i]
-              vi=getValueIdentifier()
-              tempObj=new Object()
-              vaGetter=$parse(vi)
-              vaSetter=vaGetter.assign
-              vaSetter(tempObj,v)
-              vaTextGetter=$parse($attrs.dropdownRepeatText)
-              txt=vaTextGetter(tempObj)
-              fnName="selectItem(this,"+i+")" 
-              smiddle1=stemplate3.replace("{0}",fnName)
-              smiddle2=smiddle1.replace("{0}",fnName)
-              smiddle3=smiddle2.replace("{1}",txt)
-              smiddle=smiddle+smiddle3
-              i++
-            stemplate=stemplate1+stemplate2+smiddle+stemplate4
-            $element.append($compile(stemplate)($scope))    
-        else
-          value=$scope.dropdownList
+        
+        makeTemplate = (value)->
           i=0
           iLength=value.length
           smiddle=""
@@ -167,13 +138,22 @@ mpdropdownDirective = ($parse,$compile,$timeout)->
             i++
           stemplate=stemplate1+stemplate2+smiddle+stemplate4
           $element.append($compile(stemplate)($scope))    
-              
-        sc=getScopeVariableName()
+        
+        
+        stemplate=""
+        resolvedType=type($scope.dropdownList.$resolved)
+        if resolvedType != "undefined" and $scope.dropdownList.$resolved==false
+          $scope.dropdownList.$promise.then (value)->
+            makeTemplate(value)  
+        else
+          value=$scope.dropdownList
+          makeTemplate(value)  
+            
         $scope.selectItem = (self,idx)->
           self1=self
           i=idx
-          resolved=this.dropdownList?.$resolved?
-          if type(resolved) is not undefined and resolved==false
+          resolvedType=type(this.dropdownList.$resolved)
+          if resolvedType != "undefined" and this.dropdownList.$resolved==false
             this.dropdownList.$promise.then (value)->
               this.dropdownModel=value[idx]
               
@@ -234,12 +214,7 @@ mpdropdownContentDirective = ($parse,$compile,$timeout)->
     p2=randomString 4, '0123456789'
     newname=prefix+p1+p2
     return newname
-  selectItem = ()->
-    i=0
-    return 
-  hashKey = (obj)->
-    i=0
-    return  
+ 
   directiveDefinitionObject = {
     scope: {
         dropdownSrc: '@'
@@ -291,18 +266,7 @@ mpdropdownContentDirective = ($parse,$compile,$timeout)->
         $element.append($compile(stemplate)($scope))    
         $scope.selectItem = (self,idx)->
           return
-          #self1=self
-          #i=idx
-          #if !this.dropdownList.$resolved
-          #  this.dropdownList.$promise.then (value)->
-          #    this.dropdownModel=value[idx]
-              
-          #else
-          #  this.dropdownModel=this.dropdownList[idx]
-           
-            
-          #return    
-
+     
       
         return 
     ]
@@ -313,6 +277,146 @@ mpdropdownContentDirective = ($parse,$compile,$timeout)->
         
   }
   return directiveDefinitionObject    
+###
+mpClearing
+
+###
+mpclearingDirective = ($parse,$compile,$timeout)->
+
+  type = (obj) ->
+    if obj == undefined or obj == null
+      return String obj
+    classToType = {
+      '[object Boolean]': 'boolean',
+      '[object Number]': 'number',
+      '[object String]': 'string',
+      '[object Function]': 'function',
+      '[object Array]': 'array',
+      '[object Date]': 'date',
+      '[object RegExp]': 'regexp',
+      '[object Object]': 'object'
+    }
+    return classToType[Object.prototype.toString.call(obj)]
+   
+  randomString = (length, chars)->
+    i = length
+    result=''
+    while i > 0
+      result += chars[Math.round(Math.random()*(chars.length-1))]
+      --i
+    return result
+  
+  getRandomName = (prefix)->
+    p1=randomString 28, 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+    p2=randomString 4, '0123456789'
+    newname=prefix+p1+p2
+    return newname
+  
+    ###
+      imageList=[{imageSrc:'',imageThSrc:'',caption:'',featured:false}]
+      <mp-clearing image-list="imageListData"></mp-clearing>
+    ###
+  directiveDefinitionObject = {
+    scope: {
+        clearingClass: '@'
+        clearingImageList: '='
+        clearingImageDir: '@'
+        clearingThumbDir: '@'       
+    }
+    priority: 1000
+    
+    replace: true
+    trsnaclude: false
+    restrict: 'AE'
+    controller: [
+      "$scope"
+      "$element"
+      "$attrs"
+      "$transclude"
+      "$timeout"
+      ($scope,$element,$attrs,$transclude,$timeout)->
+        uniqAId=getRandomName("clearing_")
+        divUId = getRandomName("clearingdiv_")
+        if $scope.clearingClass
+          clearingClass=$scope.clearingClass
+        else
+          clearingClass="clearing-thumbs"
+        
+    
+        
+        imageDir="pictures/"
+        if $scope.clearingImageDir
+          imageDir=$scope.clearingImageDir
+        thumbDir="pictures/"
+        if $scope.clearingThumbDir
+          thumbDir=$scope.clearingThumbDir
+           
+     
+      
+        
+        makeTemplate= (uid,value,breplace)->
+          iLength=value.length
+          i=0
+          bFeatured=false
+          smiddle=""
+          smodel='<li {0}><a href="{1}"><img src="{2}" {3}/></a></li>'
+          while i<iLength
+            iItem=value[i]
+            featured=""
+            caption=""
+            if iItem.featured
+              bFeatured=true
+              featured='class="clearing-featured-img"'
+            smiddle=smiddle+smodel.replace("{0}",featured)
+            smiddle=smiddle.replace("{1}",imageDir+iItem.imageSrc)
+            smiddle=smiddle.replace("{2}",thumbDir+iItem.imageThSrc)  
+            captionType=type(iItem.caption)
+            if captionType == "string" and iItem.caption!=""
+              caption='data-caption="'+iItem.caption+'"'
+            smiddle=smiddle.replace("{3}",caption) 
+            ++i
+          if bFeatured
+            clearingClass = clearingClass + ' ' + 'clearing-feature'
+          stemplatepre='<ul class="' + clearingClass+'" data-clearing="'+uid+'">'+smiddle+'</ul>'
+          stemplate='<div id="' + divUId + '">' + stemplatepre + '</div>'
+          if !breplace  
+            $element.append($compile(stemplate)($scope))
+          else
+            $element.find('div').remove()
+            $element.append($compile(stemplatepre)($scope))
+                
+        listType=type($scope.clearingImageList)
+        if listType == "undefined"
+          imageListType="undefined"
+        else
+          imageListType=type($scope.clearingImageList.$resolved)
+        if  imageListType != "undefined" and $scope.clearingImageList.$resolved==false
+          $scope.clearingImageList.$promise.then (value)->
+            makeTemplate(uniqAId,value,false)
+        else
+          value=$scope.clearingImageList
+          makeTemplate(uniqAId,value,false) if value
+    
+        $scope.$watch "clearingImageList", (newValue,oldValue)->
+          if newValue != oldValue
+            #$element.remove()
+            uniqAId=getRandomName("clearing_")
+      
+            makeTemplate(uniqAId,newValue,true) 
+            timer($(document).foundation('clearing'),0)
+   
+        
+         
+    ]
+    link: (scope, iElement, iAttrs,$timeout)->
+      timer($(document).foundation('clearing'),0)
+          
+      return ($scope,iElement,iAttrs,controller)->
+        return
+        
+  }
+  return directiveDefinitionObject    
 
 myF4_DirectiveApp.directive 'mpDropdown', mpdropdownDirective
 myF4_DirectiveApp.directive 'mpDropdownContent', mpdropdownContentDirective
+myF4_DirectiveApp.directive 'mpClearing', mpclearingDirective
