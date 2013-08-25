@@ -36,12 +36,17 @@
 	</div>
 	<div class="panel">
 	<label> Content Dropdown</label>
-	  <mp-dropdown-content dropdown-title="404 Content" dropdown-list="Roles" dropdown-src="'404_content.html'" dropdown-content-class="f-dropdown content medium"   dropdown-button-class="button dropdown" d></mp-dropdown-content>	
+	  <mp-dropdown-content dropdown-title="404 Content" dropdown-list="Roles" dropdown-src="'404_content.html'" dropdown-content-class="f-dropdown content medium"   dropdown-button-class="button dropdown" ></mp-dropdown-content>	
 	</div>
 	<div class="panel">
     	<label>Clearing</label>
     	<div mp-clearing clearing-image-list="imageListData"></div>
     </div>
+    <div class="panel">
+	<label>Alert Box</label>
+	  <mp-alert-box alert-content="{{alertContent}}" ></mp-alert-box>	
+	</div>
+	
     <button ng-click="onChangeImageList()">Toggle Image List</button>
     </div>
    <!--

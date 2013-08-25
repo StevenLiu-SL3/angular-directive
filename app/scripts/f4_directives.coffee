@@ -358,6 +358,99 @@ mpclearingDirective = ($parse,$compile,$timeout)->
   }
   return directiveDefinitionObject    
 
+###
+mpAlertBox
+
+###
+mpalertBoxesDirective = ($parse,$compile,$timeout)->
+  directiveDefinitionObject = {
+    scope: {
+        alertClass: '@'
+        alertContent: '@'
+        alertCloseClass: '@'
+        alertCloseSymbol: '@'       
+    }
+    priority: 0
+    
+    replace: true
+    trsnaclude: false
+    restrict: 'AE'
+    controller: [
+      "$scope"
+      "$element"
+      "$attrs"
+      "$transclude"
+      "$timeout"
+      "mpF4Helper"
+      ($scope,$element,$attrs,$transclude,$timeout,mpF4Helper)->
+        uniqAId=mpF4Helper.getRandomName("clearing_")
+        divUId = mpF4Helper.getRandomName("clearingdiv_")
+        if $scope.alertClass
+          alertClass=$scope.alertClass
+        else
+          alertClass="alert-box"
+        if $scope.alertCloseClass
+          alertCloseClass=$scope.alertCloseClass
+        else
+          alertCloseClass="close"
+        if $scope.alertCloseSymbol
+          alertCloseSymbol=$scope.alertCloseSymbol
+        else
+          alertCloseSymbol="&times;"
+     
+      
+        
+        makeTemplate= (uid,value,breplace)->
+          stemplate1="<div>"
+          stemplate2='<div data-alert class="' + alertClass + '">';
+          smiddle=value  
+          stemplate3='<a href="" class="' + alertCloseClass + '">' + alertCloseSymbol + '</a></div>'
+          stemplate4="</div>"
+          if !breplace
+            stemplate=stemplate1+stemplate2+smiddle+stemplate3+stemplate4
+            $element.append($compile(stemplate)($scope))
+          else
+            stemplate=stemplate2+smiddle+stemplate3
+            $element.find('div').remove()
+            $element.append($compile(stemplate)($scope))
+            
+                           
+        contentType=mpF4Helper.type($scope.alertContent)
+        if contentType != "undefined"
+          contentTypeResolved=mpF4Helper.type($scope.alertContent.$resolved)
+          
+        if  contentTypeResolved != "undefined" and $scope.contentType.$resolved==false
+          $scope.alertContent.$promise.then (value)->
+            makeTemplate(uniqAId,value,false)
+        else
+          value=$scope.alertContent
+          makeTemplate(uniqAId,value,false) if value
+        $scope.$watch "clearingImageList", (newValue,oldValue)->
+          if newValue != oldValue
+            #$element.remove()
+            uniqAId=mpF4Helper.getRandomName("alertbox_")
+      
+            makeTemplate(uniqAId,newValue,true) 
+            setTimeout ()->
+                $(document).foundation('alerts')
+             ,0
+   
+        
+         
+    ]
+    link: (scope, iElement, iAttrs,$timeout)->
+      setTimeout ()->
+        $(document).foundation('alerts')
+      ,0
+   
+      return ($scope,iElement,iAttrs,controller)->
+        return
+        
+  }
+  return directiveDefinitionObject    
+
+
 myF4_DirectiveApp.directive 'mpDropdown', mpdropdownDirective
 myF4_DirectiveApp.directive 'mpDropdownContent', mpdropdownContentDirective
 myF4_DirectiveApp.directive 'mpClearing', mpclearingDirective
+myF4_DirectiveApp.directive 'mpAlertBox', mpalertBoxesDirective

@@ -8,6 +8,7 @@ mainController= ($scope)->
 
 	# model object
 	$scope.selectedPerson = new Object()
+	$scope.alertContent = "Alert box content"
 	# $scope.dropDownListData for dropdown list
 	$scope.dropdownListData = [
 											{name:"John"} 
