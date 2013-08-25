@@ -2,17 +2,9 @@
 
 myF4_DirectiveApp=angular.module('myF4DirectiveApp',[])
 
-### Example
-  <mp-dropdown dropdown-title="Roles" dropdown-list="Roles" dropdown-model="User.user_data.role_row" dropdown-var="va" dropdown-split-button dropdown-repeat-text="va.role_data.role" dropdown-button-class="button split" dropdown-split-button></mp-dropdown>
-   
-   where dropdown-list is a scope variable array, dropdown-model is a element of the array     
-###
-mpdropdownDirective = ($parse,$compile,$timeout)->
-
-  valueIdentifier = null
-  keyIdentifier  = null
-  scopeVariableName = null
-  type = (obj) ->
+#Register Hellper Functions
+myF4_DirectiveApp.factory "mpF4Helper", [() ->
+  type:  (obj) ->
     if obj == undefined or obj == null
       return String obj
     classToType = {
@@ -26,6 +18,33 @@ mpdropdownDirective = ($parse,$compile,$timeout)->
       '[object Object]': 'object'
     }
     return classToType[Object.prototype.toString.call(obj)]
+  
+  randomString: (length, chars)->
+    i = length
+    result=''
+    while i > 0
+      result += chars[Math.round(Math.random()*(chars.length-1))]
+      --i
+    return result
+  
+  getRandomName:  (prefix)->
+    p1=@randomString 28, 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+    p2=@randomString 4, '0123456789'
+    newname=prefix+p1+p2
+    return newname
+ ]
+  
+### Example
+  <mp-dropdown dropdown-title="Roles" dropdown-list="Roles" dropdown-model="User.user_data.role_row" dropdown-var="va" dropdown-split-button dropdown-repeat-text="va.role_data.role" dropdown-button-class="button split" dropdown-split-button></mp-dropdown>
+   
+   where dropdown-list is a scope variable array, dropdown-model is a element of the array     
+###
+mpdropdownDirective = ($parse,$compile,$timeout)->
+
+  
+  valueIdentifier = null
+  keyIdentifier  = null
+  scopeVariableName = null
    
   setValueIdentifier=(vi)->
     valueIdentifier=vi
@@ -40,21 +59,6 @@ mpdropdownDirective = ($parse,$compile,$timeout)->
     scopeVariableName=sv
   getScopeVariableName = ()->
     return scopeVariableName
-  selectItem = (self,index)->  
-    i=index       
-  randomString = (length, chars)->
-    i = length
-    result=''
-    while i > 0
-      result += chars[Math.round(Math.random()*(chars.length-1))]
-      --i
-    return result
-  
-  getRandomName = (prefix)->
-    p1=randomString 28, 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
-    p2=randomString 4, '0123456789'
-    newname=prefix+p1+p2
-    return newname
    
   directiveDefinitionObject = {
     scope: {
@@ -94,11 +98,11 @@ mpdropdownDirective = ($parse,$compile,$timeout)->
       "$attrs"
       "$transclude"
       "$timeout"
-      ($scope,$element,$attrs,$transclude,$timeout)->
-       
+      "mpF4Helper"
+      ($scope,$element,$attrs,$transclude,$timeout,mpF4Helper)->
         setValueIdentifier($attrs.dropdownVar)
         setScopeVariableName($attrs.dropdownList)
-        uniqAId=getRandomName("dropdown_")
+        uniqAId=mpF4Helper.getRandomName("dropdown_")
         if $scope.dropdownButtonClass
           buttonClass=$scope.dropdownButtonClass
         else
@@ -141,7 +145,7 @@ mpdropdownDirective = ($parse,$compile,$timeout)->
         
         
         stemplate=""
-        resolvedType=type($scope.dropdownList.$resolved)
+        resolvedType=mpF4Helper.type($scope.dropdownList.$resolved)
         if resolvedType != "undefined" and $scope.dropdownList.$resolved==false
           $scope.dropdownList.$promise.then (value)->
             makeTemplate(value)  
@@ -152,7 +156,7 @@ mpdropdownDirective = ($parse,$compile,$timeout)->
         $scope.selectItem = (self,idx)->
           self1=self
           i=idx
-          resolvedType=type(this.dropdownList.$resolved)
+          resolvedType=mpF4Helper.type(this.dropdownList.$resolved)
           if resolvedType != "undefined" and this.dropdownList.$resolved==false
             this.dropdownList.$promise.then (value)->
               this.dropdownModel=value[idx]
@@ -166,13 +170,7 @@ mpdropdownDirective = ($parse,$compile,$timeout)->
       
         return 
     ]
-    link: (scope, iElement, iAttrs,$timeout)=>
-      aElm=iElement.find("a")
-      ulElm=iElement.find("ul")
-      liElm=iElement.find("li")
-     
-      sc=getScopeVariableName()
-        
+    link: (scope, iElement, iAttrs,$timeout)->
       return ($scope,iElement,iAttrs,controller)->
         return
           
@@ -185,35 +183,6 @@ mpdropdownDirective = ($parse,$compile,$timeout)->
 ###
 
 mpdropdownContentDirective = ($parse,$compile,$timeout)->
-
-  type = (obj) ->
-    if obj == undefined or obj == null
-      return String obj
-    classToType = {
-      '[object Boolean]': 'boolean',
-      '[object Number]': 'number',
-      '[object String]': 'string',
-      '[object Function]': 'function',
-      '[object Array]': 'array',
-      '[object Date]': 'date',
-      '[object RegExp]': 'regexp',
-      '[object Object]': 'object'
-    }
-    return classToType[Object.prototype.toString.call(obj)]
-   
-  randomString = (length, chars)->
-    i = length
-    result=''
-    while i > 0
-      result += chars[Math.round(Math.random()*(chars.length-1))]
-      --i
-    return result
-  
-  getRandomName = (prefix)->
-    p1=randomString 28, 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
-    p2=randomString 4, '0123456789'
-    newname=prefix+p1+p2
-    return newname
  
   directiveDefinitionObject = {
     scope: {
@@ -235,8 +204,10 @@ mpdropdownContentDirective = ($parse,$compile,$timeout)->
       "$attrs"
       "$transclude"
       "$timeout"
-      ($scope,$element,$attrs,$transclude,$timeout)->
-        uniqAId=getRandomName("dropdown_")
+      "mpF4Helper"
+      ($scope,$element,$attrs,$transclude,$timeout,mpF4Helper)->
+        
+        uniqAId=mpF4Helper.getRandomName("dropdown_")
         if $scope.dropdownButtonClass
           buttonClass=$scope.dropdownButtonClass
         else
@@ -270,7 +241,7 @@ mpdropdownContentDirective = ($parse,$compile,$timeout)->
       
         return 
     ]
-    link: (scope, iElement, iAttrs,$timeout)=>
+    link: (scope, iElement, iAttrs,$timeout)->
           
       return ($scope,iElement,iAttrs,controller)->
         return
@@ -282,40 +253,6 @@ mpClearing
 
 ###
 mpclearingDirective = ($parse,$compile,$timeout)->
-
-  type = (obj) ->
-    if obj == undefined or obj == null
-      return String obj
-    classToType = {
-      '[object Boolean]': 'boolean',
-      '[object Number]': 'number',
-      '[object String]': 'string',
-      '[object Function]': 'function',
-      '[object Array]': 'array',
-      '[object Date]': 'date',
-      '[object RegExp]': 'regexp',
-      '[object Object]': 'object'
-    }
-    return classToType[Object.prototype.toString.call(obj)]
-   
-  randomString = (length, chars)->
-    i = length
-    result=''
-    while i > 0
-      result += chars[Math.round(Math.random()*(chars.length-1))]
-      --i
-    return result
-  
-  getRandomName = (prefix)->
-    p1=randomString 28, 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
-    p2=randomString 4, '0123456789'
-    newname=prefix+p1+p2
-    return newname
-  
-    ###
-      imageList=[{imageSrc:'',imageThSrc:'',caption:'',featured:false}]
-      <mp-clearing image-list="imageListData"></mp-clearing>
-    ###
   directiveDefinitionObject = {
     scope: {
         clearingClass: '@'
@@ -334,9 +271,10 @@ mpclearingDirective = ($parse,$compile,$timeout)->
       "$attrs"
       "$transclude"
       "$timeout"
-      ($scope,$element,$attrs,$transclude,$timeout)->
-        uniqAId=getRandomName("clearing_")
-        divUId = getRandomName("clearingdiv_")
+      "mpF4Helper"
+      ($scope,$element,$attrs,$transclude,$timeout,mpF4Helper)->
+        uniqAId=mpF4Helper.getRandomName("clearing_")
+        divUId = mpF4Helper.getRandomName("clearingdiv_")
         if $scope.clearingClass
           clearingClass=$scope.clearingClass
         else
@@ -370,7 +308,7 @@ mpclearingDirective = ($parse,$compile,$timeout)->
             smiddle=smiddle+smodel.replace("{0}",featured)
             smiddle=smiddle.replace("{1}",imageDir+iItem.imageSrc)
             smiddle=smiddle.replace("{2}",thumbDir+iItem.imageThSrc)  
-            captionType=type(iItem.caption)
+            captionType=mpF4Helper.type(iItem.caption)
             if captionType == "string" and iItem.caption!=""
               caption='data-caption="'+iItem.caption+'"'
             smiddle=smiddle.replace("{3}",caption) 
@@ -385,11 +323,11 @@ mpclearingDirective = ($parse,$compile,$timeout)->
             $element.find('div').remove()
             $element.append($compile(stemplatepre)($scope))
                 
-        listType=type($scope.clearingImageList)
+        listType=mpF4Helper.type($scope.clearingImageList)
         if listType == "undefined"
           imageListType="undefined"
         else
-          imageListType=type($scope.clearingImageList.$resolved)
+          imageListType=mpF4Helper.type($scope.clearingImageList.$resolved)
         if  imageListType != "undefined" and $scope.clearingImageList.$resolved==false
           $scope.clearingImageList.$promise.then (value)->
             makeTemplate(uniqAId,value,false)
@@ -399,7 +337,7 @@ mpclearingDirective = ($parse,$compile,$timeout)->
         $scope.$watch "clearingImageList", (newValue,oldValue)->
           if newValue != oldValue
             #$element.remove()
-            uniqAId=getRandomName("clearing_")
+            uniqAId=mpF4Helper.getRandomName("clearing_")
       
             makeTemplate(uniqAId,newValue,true) 
             setTimeout ()->
