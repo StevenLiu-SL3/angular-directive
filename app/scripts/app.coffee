@@ -14,6 +14,12 @@ mainController= ($scope)->
 											{name:"John"} 
 											{name:"Susan"}
 										]
+	$scope.sectionListdata = [
+	                    {title:"Section 1",content:"<p>Content 1</p>",src:"",include:false}
+	                    {title:"Section 2",content:"Content 2",src:"",include:false}
+	                    {title:"Section 3",content:"Content 3",src:"",include:false}
+	                    
+	                  ]
   imageListType=typeof $scope.imageListData
 	if imageListType == "undefined"
 	  $scope.imageListData=null

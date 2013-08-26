@@ -32,7 +32,29 @@ myF4_DirectiveApp.factory "mpF4Helper", [() ->
     p2=@randomString 4, '0123456789'
     newname=prefix+p1+p2
     return newname
- ]
+ 
+  clone: (obj) ->
+    if not obj? or typeof obj isnt 'object'
+      return obj
+  
+    if obj instanceof Date
+      return new Date(obj.getTime()) 
+  
+    if obj instanceof RegExp
+      flags = ''
+      flags += 'g' if obj.global?
+      flags += 'i' if obj.ignoreCase?
+      flags += 'm' if obj.multiline?
+      flags += 'y' if obj.sticky?
+      return new RegExp(obj.source, flags) 
+  
+    newInstance = new obj.constructor()
+  
+    for key of obj
+      newInstance[key] = @clone obj[key]
+  
+    return newInstance
+]
   
 ### Example
   <mp-dropdown dropdown-title="Roles" dropdown-list="Roles" dropdown-model="User.user_data.role_row" dropdown-var="va" dropdown-split-button dropdown-repeat-text="va.role_data.role" dropdown-button-class="button split" dropdown-split-button></mp-dropdown>
@@ -370,7 +392,7 @@ mpalertBoxesDirective = ($parse,$compile,$timeout)->
         alertCloseClass: '@'
         alertCloseSymbol: '@'       
     }
-    priority: 0
+    priority: 1000
     
     replace: true
     trsnaclude: false
@@ -451,7 +473,7 @@ mpalertBoxesDirective = ($parse,$compile,$timeout)->
 
 
 ###
-mpAlertBox
+mpSection
 
 ###
 mpsectionDirective = ($parse,$compile,$timeout)->
@@ -465,11 +487,11 @@ mpsectionDirective = ($parse,$compile,$timeout)->
         sectionIncludeSrc: '@'    
         sectionRepeat: '@'   
     }
-    priority: 0
+    priority: 1000
     
     replace: true
-    trsnaclude: false
-    restrict: 'AE'
+    transclude: false
+    restrict: 'A'
     controller: [
       "$scope"
       "$element"
@@ -523,7 +545,7 @@ mpsectionDirective = ($parse,$compile,$timeout)->
             #stemplate=stemplate2+stemplate3+stemplate4+stemplate5
             $element.append($compile(stemplate)($scope))
           else
-            stemplate=stemplate2+smiddle+stemplate3+stemplate4+stemplate5
+            stemplate=stemplate2+stemplate3+stemplate4+stemplate5
             $element.find('div').remove()
             #$element.remove()
             $element.append($compile(stemplate)($scope))
@@ -553,8 +575,151 @@ mpsectionDirective = ($parse,$compile,$timeout)->
   }
   return directiveDefinitionObject    
 
+###
+mpSectionContainer
+sectionList must be in the following format and the first three items must be present
+[{title:"",content:"",src:'',include:false,titleClass:"",contentClass:"",href:""}]
+when include is true src would be the url point to a partial html file
+###
+mpsectionContainerDirective = ($parse,$compile,$timeout)->
+  directiveDefinitionObject = {
+    scope: {
+       containerClass: "@"
+       containerDataSection: "@"
+       containerDataOption: "@"
+       sectionList: '='
+       
+    }
+    priority: 1000
+    #template:'<div class="section-container auto" data-section="" ng-include></div>'
+    replace: true
+    transclude: false
+    restrict: 'AE'
+    controller: [
+      "$scope"
+      "$element"
+      "$attrs"
+      "$transclude"
+      "$timeout"
+      "mpF4Helper"
+      ($scope,$element,$attrs,$transclude,$timeout,mpF4Helper)->
+        uniqAId=mpF4Helper.getRandomName("clearing_")
+        divUId = mpF4Helper.getRandomName("clearingdiv_")
+        if $scope.containerClass
+          containerClass=$scope.containerClass
+        else
+          containerClass="section-container auto"
+        if $scope.containerDataSection
+          containerDataSection=$scope.containerDataSection
+        else
+          containerDataSection=""
+         
+        if $scope.containerDataOption
+          containerDataOption = $scope.containerDataOption
+        else
+          containerDataOption = ""
+          
+        if $scope.sectionList
+          sectionList=$scope.sectionList
+        else
+          return
+        
+        
+        
+        setSectionDefault = (oItem)->
+          item=mpF4Helper.clone(oItem)
+          if mpF4Helper.type(item.include) == "undefined"
+            item.include=false
+          if mpF4Helper.type(item.content) == "undefined"
+            item.content=""
+            
+          if mpF4Helper.type(item.src) == "undefined"
+            item.src=""
+        
+          if mpF4Helper.type(item.titleClass) == "undefined"
+            item.titleClass = ""
+          if item.titleClass == ""
+            item.titleClass="title"
+          if mpF4Helper.type(item.title) == "undefined"
+            item.title = ""
+          if item.title == ""
+            item.title="Section"
+          
+          if mpF4Helper.type(item.contentClass) == "undefined" 
+            item.contentClass=""
+          if item.contentClass==""
+            item.contentClass="content"
+          return item  
+          
+            
+        makeSection = (item)->
+          sline1="<section>"
+          sline2='<p calss="{0}" data-section-title><a href="{1}">{2}</a></p>'
+          sline3='<div class="{3}" data-section-content>{4}</div>'
+          sline4='</section>'
+          sline2=sline2.replace("{0}",item.titleClass)
+          sline2=sline2.replace("{1}",item.href)
+          sline2=sline2.replace("{2}",item.title)
+          sline3=sline3.replace("{3}",item.contentClass)
+          if item.include
+            sline3=sline3.replace("{4}",'<ng-include src="' + item.src + '"/>')
+          else
+            sline3=sline3.replace("{4}",item.content)
+          return sline1+sline2+sline3+sline4
+        
+        makeTemplate = (secList,inclusive) ->
+          sectionListType=mpF4Helper.type(secList)  
+          if sectionListType =="array"
+            iLen=secList.length
+            i=0
+            sline=""
+            while i<iLen
+              item=setSectionDefault(secList[i])
+              sline=sline+makeSection(item)
+              
+              ++i
+            if inclusive==false
+              return sline
+            stemplate1='<div class="{0}" data-section="{1}" data-options="{2}">
+            {3}</div>'
+            stemplate1=stemplate1.replace("{0}",containerClass)
+            stemplate1=stemplate1.replace("{1}",containerDataSection)
+            stemplate1=stemplate1.replace("{2}",containerDataOption)
+            stemplate1=stemplate1.replace("{3}",sline)
+            return stemplate1
+        stemplate=makeTemplate(sectionList,true)
+        $element.append($compile(stemplate)($scope))
+        
+        $scope.$watch "sectionList", (newValue,oldValue)->
+          if newValue != oldValue
+            #$element.remove()
+            stemplate
+            sline=makeTemplate(neValue,false)
+            $element.find("div").remove()
+            $element.append($compile(sline)($scope))
+            setTimeout ()->
+              $(document).foundation("section")
+             ,0 
+        setTimeout ()->
+            $(document).foundation('section')
+           ,0
+ 
+         
+    ]
+    link: (scope, iElement, iAttrs,$timeout)->
+      setTimeout ()->
+        $(document).foundation("section")
+      ,0
+   
+      return ($scope,iElement,iAttrs,controller)->
+        return
+        
+  }
+  return directiveDefinitionObject    
+
 myF4_DirectiveApp.directive 'mpDropdown', mpdropdownDirective
 myF4_DirectiveApp.directive 'mpDropdownContent', mpdropdownContentDirective
 myF4_DirectiveApp.directive 'mpClearing', mpclearingDirective
 myF4_DirectiveApp.directive 'mpAlertBox', mpalertBoxesDirective
 myF4_DirectiveApp.directive 'mpSection', mpsectionDirective
+myF4_DirectiveApp.directive 'mpSectionContainer', mpsectionContainerDirective
