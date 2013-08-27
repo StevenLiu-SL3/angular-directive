@@ -1,14 +1,3 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
-<html><head>
-  
-  <meta content="text/html; charset=ISO-8859-1" http-equiv="content-type">
-
-  
-  <meta content="text/html; charset=ISO-8859-1" http-equiv="content-type">
-  <title>README</title>
-
-  
-</head><body>&nbsp;
 Example of AngularJS integration of zurb's foundation 4 framework using custom directives<br>
 <br>
 &nbsp;1) mp-dropdown<br>
@@ -49,4 +38,3 @@ In the project directory, <br>
 3) grunt server<br>
 <br>
 *Note: if you encountered any missing package dependency please install by npm install <br>
-</body></html>
