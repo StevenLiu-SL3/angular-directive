@@ -1,78 +1,81 @@
-<!doctype html>
+<!DOCTYPE html>
 <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
 <!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
 <!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js"  ng-app="f4DirectivesApp"  ng-controller="mainController">
+  <!--<![endif]-->
   <head>
-    <meta charset="utf-8">
+    <meta content="text/html; charset=utf-8" http-equiv="content-type">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title></title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width">
     <script src="bower_components/foundation/js/vendor/custom.modernizr.js"></script>
-  
     <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
-
-        <!-- build:css(.tmp) styles/main.css -->
-        <link rel="stylesheet" href="styles/main.css">
-        <!-- endbuild -->
-</head>
-  <body  ng-app="f4DirectivesApp" >
+    <!-- build:css(.tmp) styles/main.css -->
+    <link rel="stylesheet" href="styles/main.css">
+    <!-- endbuild -->
+  </head>
+  <body>
     <!--[if lt IE 7]>
-      <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
-    <![endif]-->
-
+      <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>    <![endif]-->
     <!--[if lt IE 9]>
-      <script src="bower_components/es5-shim/es5-shim.js"></script>
-      <script src="bower_components/json3/lib/json3.min.js"></script>
-    <![endif]-->
-    
-    <div ng-controller="mainController">
-    <!-- Add your site or application content here -->
-    <div class="panel">
-    <label>Person name: {{selectedPerson.name}}</label>
-    	<!-- dropdown button -->
-    	<mp-dropdown dropdown-title="Person" dropdown-list="dropdownListData" dropdown-model="selectedPerson" dropdown-var="va" dropdown-repeat-text="va.name" dropdown-button-class="button dropdown" ></mp-dropdown>
-	</div>
-	<div class="panel">
-	<label> Content Dropdown</label>
-	  <mp-dropdown-content dropdown-title="404 Content" dropdown-list="Roles" dropdown-src="'404_content.html'" dropdown-content-class="f-dropdown content medium"   dropdown-button-class="button dropdown" ></mp-dropdown-content>	
-	</div>
-	<div class="panel">
-    	<label>Clearing</label>
-    	<div mp-clearing clearing-image-list="imageListData"></div>
+      <script src="bower_components/es5-shim/es5-shim.js"></script>      <script src="bower_components/json3/lib/json3.min.js"></script>    <![endif]-->
+    <div>
+      <!-- Add your site or application content here -->
+      <div class="panel"> <label>Person name: {{selectedPerson.name}}</label>
+        <!-- dropdown button --> <mp-dropdown dropdown-title="Person" dropdown-list="dropdownListData"
+          dropdown-model="selectedPerson" dropdown-var="va" dropdown-repeat-text="va.name"
+          dropdown-button-class="button dropdown"></mp-dropdown> </div>
+      <div class="panel"> <label> Content Dropdown</label> <mp-dropdown-content
+          dropdown-title="404 Content" dropdown-list="Roles" dropdown-src="'404_content.html'"
+          dropdown-content-class="f-dropdown content medium" dropdown-button-class="button dropdown"></mp-dropdown-content>
+      </div>
+      <div class="panel"> <label>Clearing</label> </div>
+      <div mp-clearing clearing-image-list="imageListData"></div>
+      <button ng-click="onChangeImageList()">Toggle Image List&nbsp;</button>
+      <div class="panel"> <label>Alert Box</label> <mp-alert-box alert-content="{{alertContent}}"></mp-alert-box>
+      </div>
+      <div class="panel"> <label>Section Panels</label> <mp-section-container
+          container-class="section-container tabs" container-data-section="tabs"
+          section-list="sectionListdata"> </mp-section-container> <mp-section-container
+          container-class="section-container tabs" container-data-section="tabs">
+        </mp-section-container> </div>
     </div>
-    <button ng-click="onChangeImageList()">Toggle Image List</button>
-    
-    <div class="panel">
-	<label>Alert Box</label>
-	  <mp-alert-box alert-content="{{alertContent}}" ></mp-alert-box>	
-	</div>
-	
-      <div class="panel">
-	<label>Section Panels</label>
-	<mp-section-container section-list="sectionListdata">
-		</mp-section-container>
-	
-	  <mp-alert-box alert-content="{{alertContent}}" ></mp-alert-box>	
-	</div>
-	
-    </div>
-   <!--
-    <ul class="clearing-thumbs" data-clearing="abc123">
-  <li><a href="pictures/20130723_135624.jpg"><img data-caption="caption here..." src="pictures/thumb.20130723_135624.jpg"></a></li>
-  <li><a href="pictures/20130723_135805.jpg"><img data-caption="caption 2 here..." src="pictures/thumb.20130723_135805.jpg"></a></li>
-  <li><a href="pictures/20130723_140100.jpg"><img data-caption="caption 3 here..." src="pictures/20130723_140100.jpg"></a></li>
+    <div class="mypanel">Test</div>
+    <ul class="pricing-table">
+  <li class="title">Standard</li>
+  <li class="price">$99.99</li>
+  <li class="description">An awesome description</li>
+  <li class="bullet-item">1 Database</li>
+  <li class="bullet-item">5GB Storage</li>
+  <li class="bullet-item">20 Users</li>
+  <li class="cta-button"><a class="button" href="#">Buy Now</a></li>
 </ul>
--->
-
-   <script>
+    <div class="section-container auto" data-section>
+  <section>
+    <p class="title" data-section-title><a href="#panel1">Section 1</a></p>
+    <div class="content" data-section-content>
+      <p>Content of section 1.</p>
+    </div>
+  </section>
+  <section>
+    <p class="title" data-section-title><a href="#panel2">Section 2</a></p>
+    <div class="content" data-section-content>
+      <p>Content of section 2.</p>
+    </div>
+  </section>
+</div>
+    <!--
+    <ul class="clearing-thumbs" data-clearing="abc123"><li><a href="pictures/20130723_135624.jpg"><img data-caption="caption here..." src="pictures/thumb.20130723_135624.jpg"></a></li>  <li><a href="pictures/20130723_135805.jpg"><img data-caption="caption 2 here..." src="pictures/thumb.20130723_135805.jpg"></a></li>  <li><a href="pictures/20130723_140100.jpg"><img data-caption="caption 3 here..." src="pictures/20130723_140100.jpg"></a></li>
+</ul>-->
+    <script>
   document.write('<script src=/bower_components/foundation/js/vendor/'
     + ('__proto__' in {} ? 'zepto' : 'jquery')
     + '.js><\/script>');
-</script>    
-    <!-- Google Analytics: change UA-XXXXX-X to be your site's ID -->
-     <script>
+</script> <!-- Google Analytics: change UA-XXXXX-X to be your site's ID -->
+    <script>
        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
@@ -81,21 +84,19 @@
        ga('create', 'UA-XXXXX-X');
        ga('send', 'pageview');
     </script>
-  <script src="bower_components/foundation/js/foundation/foundation.js"></script>
-	<script src="bower_components/foundation/js/foundation/foundation.placeholder.js"></script>
-	<script src="bower_components/foundation/js/foundation/foundation.dropdown.js"></script>
-	<script src="bower_components/foundation/js/foundation/foundation.clearing.js"></script>
-	<script src="bower_components/foundation/js/foundation/foundation.alerts.js"></script>
-	<script src="bower_components/foundation/js/foundation/foundation.section.js"></script>
+    <script src="bower_components/foundation/js/foundation/foundation.js"></script>
+    <script src="bower_components/foundation/js/foundation/foundation.placeholder.js"></script>
+    <script src="bower_components/foundation/js/foundation/foundation.dropdown.js"></script>
+    <script src="bower_components/foundation/js/foundation/foundation.clearing.js"></script>
+    <script src="bower_components/foundation/js/foundation/foundation.alerts.js"></script>
+    <script src="bower_components/foundation/js/foundation/foundation.section.js"></script>
     <script src="bower_components/angular/angular.js"></script>
-	
-        <!-- build:js({.tmp,app}) scripts/scripts.js -->
-        <script src="scripts/f4_directives.js"></script>
-        <script src="scripts/app.js"></script>
-        <!-- endbuild -->
- 
+    <!-- build:js({.tmp,app}) scripts/scripts.js -->
+    <script src="scripts/f4_directives.js"></script>
+    <script src="scripts/app.js"></script>
+    <!-- endbuild -->
     <script>
     	$(document).foundation();
     </script>
-</body>
+  </body>
 </html>

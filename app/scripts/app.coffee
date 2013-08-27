@@ -10,14 +10,22 @@ mainController= ($scope)->
 	$scope.selectedPerson = new Object()
 	$scope.alertContent = "Alert box content"
 	# $scope.dropDownListData for dropdown list
+	$scope.topMenu = {
+	                  title:{class:"name",href:"#",titleName:"Top Bar Title"}
+	                  left_section:{
+	                    }
+	                  right_section:{
+	                    }
+	                 }
+	
 	$scope.dropdownListData = [
 											{name:"John"} 
 											{name:"Susan"}
 										]
 	$scope.sectionListdata = [
-	                    {title:"Section 1",content:"<p>Content 1</p>",src:"",include:false}
-	                    {title:"Section 2",content:"Content 2",src:"",include:false}
-	                    {title:"Section 3",content:"Content 3",src:"",include:false}
+	                    {title:"Section 1",content:"<p>Content 1</p>",src:"",contentClass:"content",titleClass:"title",href:"#",include:false}
+	                    {title:"Section 2",content:"Content 2",src:"",contentClass:"content",titleClass:"title",href:"#",include:false}
+	                    {title:"Section 3",content:"Content 3",src:"",contentClass:"content",titleClass:"title",href:"#",include:false}
 	                    
 	                  ]
   imageListType=typeof $scope.imageListData

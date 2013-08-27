@@ -1,2 +1,160 @@
-@import "../bower_components/foundation/scss/normalize"
+//@import "../bower_components/foundation/scss/normalize"
 @import "../bower_components/foundation/scss/foundation"
+
+$mysecondary_color: $secondary-color
+$myprimary_color: $primary-color
+$myglobal_radius: $global-radius
+////////////////////// PANEL //////////////////////////
+// Panels
+// darken(#fff,5%)
+$my_panel_bg: darken(#fff,10%)
+// soild
+$my_panel_border_style: solid
+// 1px
+$my_panel_border_size: 1px
+// 10%
+$my_panel_function_factor: 10%
+// darken($panel-bg,$panel-function-factor)
+$my_panel_border_color:darken($my_panel_bg,$my_panel_function_factor)
+// emCalc(20)
+$my_panel_margin_bottom: emCalc(20)
+// emCalc(20)
+$my_panel_padding: emCalc(3)
+// #333
+$my_panel_font_color: #333
+// #fff
+$my_panel_color_alt: #fff
+// true
+$my_panel_header_adjust: true
+
+
+.mypanel
+  @include panel($my_panel_bg,$my_panel_padding,$my_panel_header_adjust)
+
+/////////////////////// ALERT ///////////////////////////
+//$alert-padding-top: emCalc(11)
+$myalert_padding_top: emCalc(11)
+
+//$alert-padding-default-float: $alert-padding-top
+$myalert_padding_default_float: $myalert_padding_top
+//$alert-padding-top + emCalc(10)
+$myalert_padding_opposite_direction: $myalert_padding_top + emCalc(10)
+// $alert-padding-top + emCalc(1)
+$myalert_padding_bottom: $myalert_padding_top + emCalc(1)
+
+/* We use these to control text style. */
+// bold
+$myalert_font_weight: bold
+// emCalc(14)
+$myalert_font_size: emCalc(14)
+// #fff
+$myalert_font_color: #fff
+//darken($secondary-color, 60%)
+$myalert_font_color_alt: darken($mysecondary_color, 60%)
+
+/* We use this for close hover effect. */
+// 10%
+$myalert_function_factor: 10%
+
+/* We use these to control border styles. */
+// solid
+$myalert_border_style: solid
+// 1px
+$myalert_border_width: 1px
+//darken($primary-color, $alert-function-factor)
+$myalert_border_color: darken($myprimary_color, $myalert_function_factor)
+// emCalc(20)
+$myalert_bottom_margin: emCalc(20)
+
+/* We use these to style the close buttons */
+//#333
+$myalert_close_color: #333
+// emCalc(5)
+$myalert_close_position: emCalc(5)
+// emCalc
+$myalert_close_font-size: emCalc(22)
+// 0.3
+$myalert_close_opacity: 0.3
+// 0.5
+$myalert_close_opacity_hover: 0.5
+//  5px 4px 4px
+$myalert_close_padding: 5px 4px 4px
+// $global-radius
+$myalert_radius: $myglobal_radius
+
+/* We use this to control border radius */
+
+$myalert_bg: #FF88FF
+$myalert_radius_bg: $myalert_bg
+  
+
+.myboxalert
+  @include alert-base
+  @include alert-style($myalert_bg)
+  .close
+    @include alert-close
+
+.myradiusalert
+  @include alert-base
+  @include alert-style($myalert_radius_bg)
+  @include radius($myalert_radius)
+
+  
+
+//////////////////// PRICING TABLE ///////////////////////////
+/* We use this to control the border color */
+$price-table-border: solid 1px #ddd
+
+/* We use this to control the bottom margin of the pricing table */
+$price-table-margin-bottom: emCalc(20)
+
+/* We use these to control the title styles */
+$price-title-bg: #ddd
+$price-title-padding: emCalc(15, 20)
+$price-title-align: center
+$price-title-color: #333
+$price-title-weight: bold
+$price-title-size: emCalc(16)
+
+/* We use these to control the price styles */
+$price-money-bg: #eee
+$price-money-padding: emCalc(15, 20)
+$price-money-align: center
+$price-money-color: #333
+$price-money-weight: normal
+$price-money-size: emCalc(20)
+
+/* We use these to control the description styles */
+$price-bg: #fff
+$price-desc-color: #777
+$price-desc-padding: emCalc(15)
+$price-desc-align: center
+$price-desc-font-size: emCalc(12)
+$price-desc-weight: normal
+$price-desc-line-height: 1.4
+$price-desc-bottom-border: dotted 1px #ddd
+
+/* We use these to control the list item styles */
+$price-item-color: #333
+$price-item-padding: emCalc(15)
+$price-item-align: center
+$price-item-font-size: emCalc(14)
+$price-item-weight: normal
+$price-item-bottom-border: dotted 1px #ddd
+
+/* We use these to control the CTA area styles */
+$price-cta-bg: #f5f5f5
+$price-cta-align: center
+$price-cta-padding: emCalc(20, 20, 0)
+.mypricing_table
+  @include pricing-table-container
+  .mytitle
+    @include pricing-table-title
+  .myprice
+    @include pricing-table-price
+  .mydescription
+    @include pricing-table-description
+  .mybullet
+    @include pricing-table-bullet
+  .mycta
+    @include pricing-table-cta

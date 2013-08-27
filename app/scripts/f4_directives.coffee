@@ -593,7 +593,7 @@ mpsectionContainerDirective = ($parse,$compile,$timeout)->
     priority: 1000
     #template:'<div class="section-container auto" data-section="" ng-include></div>'
     replace: true
-    transclude: false
+    transclude: true
     restrict: 'AE'
     controller: [
       "$scope"
@@ -701,6 +701,7 @@ mpsectionContainerDirective = ($parse,$compile,$timeout)->
               $(document).foundation("section")
              ,0 
         setTimeout ()->
+            
             $(document).foundation('section')
            ,0
  
@@ -708,6 +709,7 @@ mpsectionContainerDirective = ($parse,$compile,$timeout)->
     ]
     link: (scope, iElement, iAttrs,$timeout)->
       setTimeout ()->
+        scope.$apply()
         $(document).foundation("section")
       ,0
    
