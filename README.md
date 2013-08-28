@@ -37,4 +37,4 @@ In the project directory, <br>
 2) run "npm install"<br>
 3) grunt server<br>
 <br>
-*Note: if you encountered any missing package dependency please install by npm install <br>
+*Note: if you encountered any missing package dependency please install by npm<br>
