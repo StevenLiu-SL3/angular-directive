@@ -143,7 +143,7 @@ module.exports = function (grunt) {
           expand: true,
           cwd: '<%= yeoman.app %>/scripts',
           src: '{,*/}*.coffee',
-          dest: '.tmp/scripts',
+          dest: '<%= yeoman.app %>/scripts',
           ext: '.js'
         }]
       },
@@ -286,7 +286,8 @@ module.exports = function (grunt) {
             '.htaccess',
             'bower_components/**/*',
             'images/{,*/}*.{gif,webp}',
-            'styles/fonts/*'
+            'styles/**/*',
+	    'scripts/**/*'
           ]
         }, {
           expand: true,
@@ -403,17 +404,17 @@ grunt.loadNpmTasks('grunt-rev');
 
   grunt.registerTask('build', [
     'clean:dist',
-    'useminPrepare',
+    //'useminPrepare',
     'concurrent:dist',
     'autoprefixer',
-    'concat',
+    //'concat',
     'copy:dist',
-    'cdnify',
-    'ngmin',
-    'cssmin',
-    'uglify',
+    //'cdnify',
+    //'ngmin',
+    //'cssmin',
+    //'uglify',
     'rev',
-    'usemin'
+    //'usemin'
   ]);
 
   grunt.registerTask('default', [
