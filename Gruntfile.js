@@ -413,7 +413,7 @@ grunt.loadNpmTasks('grunt-rev');
     //'ngmin',
     //'cssmin',
     //'uglify',
-    'rev',
+    //'rev',
     //'usemin'
   ]);
 
