@@ -677,25 +677,32 @@ mpsectionContainerDirective = ($parse,$compile,$timeout)->
         
         
         setSectionDefault = (oItem)->
-          item=mpF4Helper.clone(oItem)
-          if mpF4Helper.type(item.include) == "undefined"
+          #item=mpF4Helper.clone(oItem)
+          item=angular.copy(oItem)
+          #if mpF4Helper.type(item.include) == "undefined"
+          if angular.isUndefined(item.include)
             item.include=false
-          if mpF4Helper.type(item.content) == "undefined"
+          #if mpF4Helper.type(item.content) == "undefined"
+          if angular.isUndefined(item.content)
             item.content=""
             
-          if mpF4Helper.type(item.src) == "undefined"
+          #if mpF4Helper.type(item.src) == "undefined"
+          if angular.isUndefined(item.src)
             item.src=""
         
-          if mpF4Helper.type(item.titleClass) == "undefined"
+          #if mpF4Helper.type(item.titleClass) == "undefined"
+          if angular.isUndefined(item.titleClass)
             item.titleClass = ""
           if item.titleClass == ""
             item.titleClass="title"
-          if mpF4Helper.type(item.title) == "undefined"
+          #if mpF4Helper.type(item.title) == "undefined"
+          if angular.isUndefined(item.title)
             item.title = ""
           if item.title == ""
             item.title="Section"
           
-          if mpF4Helper.type(item.contentClass) == "undefined" 
+          #if mpF4Helper.type(item.contentClass) == "undefined"
+          if angular.isUndefined(item.conten) 
             item.contentClass=""
           if item.contentClass==""
             item.contentClass="content"
@@ -888,6 +895,125 @@ mpcheckboxDirective = ($parse,$compile,$timeout)->
   }
   return directiveDefinitionObject
   
+###
+Checkbox directive mp-checkbox
+mp-checked
+mp-checked-value
+mp-unchecked-value
+###
+mpswitchDirective = ($parse,$compile,$timeout)->
+
+  directiveDefinitionObject = {
+    scope: {
+       mpClass : '@'
+       mpChecked: '='
+       mpCheckedValue: '@'
+       mpUncheckedValue: '@'
+    }
+    priority: 1000
+    #template:'<div class="section-container auto" data-section="" ng-include></div>'
+    replace: true
+    transclude: false
+    restrict: 'E'
+    controller: [
+      "$scope"
+      "$element"
+      "$attrs"
+      "$transclude"
+      "$timeout"
+      "radioGlobalService"
+      "mpF4Helper"
+      ($scope,$element,$attrs,$transclude,$timeout,radioGlobalService,mpF4Helper)->
+        uniqAId=mpF4Helper.getRandomName("x")
+        
+        uniqName='switch-' + uniqAId 
+        uniqId1=uniqAId
+        
+        uniqId2=uniqAId + '1'
+        
+        if angular.isUndefined($scope.mpClass)
+          mpClass='switch'
+        else
+          mpClass=$scope.mpClass
+        
+        checkValue="ON"
+        uncheckValue="OFF"
+        
+        if angular.isDefined($scope.mpCheckedValue)
+          checkValue=$scope.mpCheckedValue
+        
+        if angular.isDefined($scope.mpUncheckedValue)
+          uncheckValue=$scope.mpUncheckedValue
+
+       
+        makeTemplate = (unCheckV, checkV, defaultV, replace)->
+          if !replace
+            line1='<div class="{0}">'
+          else
+            line1=''
+          line1=line1 + '<input id="{1}" name="{2}" type="{3}" {4} >'
+          line1=line1 + '<label for="{5}" onclick="">{6}</label>'
+          line1=line1 + '<input id="{7}" name="{8}" type="{9}" {10} >'
+          line1=line1 + '<label for="{11}" onclick="">{12}</label>'
+        
+          if !replace
+            line1=line1 + '</div>'
+          line1=line1.replace("{0}",mpClass)
+          line1=line1.replace("{1}",uniqId1)
+          line1=line1.replace("{2}",uniqName)
+          line1=line1.replace("{3}","radio")
+        
+          if defaultV == unCheckV
+            checked="checked"
+          else
+            checked=""
+        
+          line1=line1.replace("{4}",checked)
+        
+          if checked==""
+            checked="checked"
+          else
+            checked=""
+        
+          line1=line1.replace("{5}",uniqId1)
+          line1=line1.replace("{6}",unCheckV)
+          line1=line1.replace("{7}",uniqId2)
+          line1=line1.replace("{8}",uniqName)
+          line1=line1.replace("{9}","radio")
+          line1=line1.replace("{10}",checked)
+          line1=line1.replace("{11}",uniqId2)
+          line1=line1.replace("{12}",checkV)
+        
+          if !replace
+            $element.append($compile(line1)($scope))    
+          else  
+            $element.find('div').append($compile(line1)($scope))
+          setTimeout ()->
+            $(document).foundation("forms")
+          ,0
+          
+        makeTemplate(uncheckValue,checkValue,$scope.mpChecked,false)
+        $scope.$watch 'mpChecked', (newValue,oldValue)->
+          makeTemplate(uncheckValue,checkValue,newValue,true)
+          
+        checkboxClick = (ctrl)->
+          $scope.$apply ()->
+            if ctrl.currentTarget.checked
+              $scope.mpChecked = checkValue
+            else
+              $scope.mpChecked = uncheckValue
+        $element.bind("change",checkboxClick)  
+        
+      
+    ]
+    link: (scope, iElement, iAttrs,$timeout)->
+      
+      return ($scope,iElement,iAttrs,controller)->
+        return
+        
+  }
+  return directiveDefinitionObject
+
 myF4_DirectiveApp.directive 'mpDropdown', mpdropdownDirective
 myF4_DirectiveApp.directive 'mpDropdownContent', mpdropdownContentDirective
 myF4_DirectiveApp.directive 'mpClearing', mpclearingDirective
@@ -896,3 +1022,5 @@ myF4_DirectiveApp.directive 'mpSection', mpsectionDirective
 myF4_DirectiveApp.directive 'mpSectionContainer', mpsectionContainerDirective
 myF4_DirectiveApp.directive 'mpRadio', mpradioDirective
 myF4_DirectiveApp.directive 'mpCheckbox', mpcheckboxDirective
+myF4_DirectiveApp.directive 'mpSwitch', mpswitchDirective
+
