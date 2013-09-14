@@ -54,8 +54,58 @@ myF4_DirectiveApp.factory "mpF4Helper", [() ->
       newInstance[key] = @clone obj[key]
   
     return newInstance
-]
+
+  cloneAttributes: (obj) ->
+    if not obj? or typeof obj isnt 'object'
+      return obj
   
+    if obj instanceof Date
+      return new Date(obj.getTime()) 
+  
+    if obj instanceof RegExp
+      flags = ''
+      flags += 'g' if obj.global?
+      flags += 'i' if obj.ignoreCase?
+      flags += 'm' if obj.multiline?
+      flags += 'y' if obj.sticky?
+      return new RegExp(obj.source, flags) 
+    bOk=true
+    newInstance=null
+    try
+      newInstance = new obj.constructor()
+    catch
+      bOk=false
+      return null
+
+    for key of obj
+      inst=@cloneAttributes obj[key]
+      if inst
+        newInstance[key] = inst 
+  
+    return newInstance
+]
+
+
+myF4_DirectiveApp.service "radioGlobalService", ["mpF4Helper",(mpF4Helper)->
+  if mpF4Helper.type(@radioGlalbal) == "undefined"
+    @radioGlobal=new Array();
+  this.registerRadio = (scope,element,attrs,transclude) ->
+    if mpF4Helper.type(attrs.id) != "undefined"
+      id=attrs.id
+      obj=@radioGlobal[id]
+      if mpF4Helper.type(obj) == "undefined"
+        @radioGlobal[id]=new Array()
+
+      obj=@radioGlobal[id]
+      if mpF4Helper.type(obj) == "array"
+        iLen=obj.length
+        obj[iLen]=element
+  this.getRadios = (id)->
+    return @radioGlobal[id]
+
+
+]
+
 ### Example
   <mp-dropdown dropdown-title="Roles" dropdown-list="Roles" dropdown-model="User.user_data.role_row" dropdown-var="va" dropdown-split-button dropdown-repeat-text="va.role_data.role" dropdown-button-class="button split" dropdown-split-button></mp-dropdown>
    
@@ -717,11 +767,132 @@ mpsectionContainerDirective = ($parse,$compile,$timeout)->
         return
         
   }
-  return directiveDefinitionObject    
+  return directiveDefinitionObject   
+###
+Radio directive mp-radio
+model mp-selected
+###
+mpradioDirective = ($parse,$compile,$timeout)->
+  directiveDefinitionObject = {
+    scope: {
+       mpSelected: '='
+    }
+    priority: 1000
+    #template:'<div class="section-container auto" data-section="" ng-include></div>'
+    replace: false
+    transclude: true
+    restrict: 'A'
+    controller: [
+      "$scope"
+      "$element"
+      "$attrs"
+      "$transclude"
+      "$timeout"
+      "radioGlobalService"
+      "mpF4Helper"
+      ($scope,$element,$attrs,$transclude,$timeout,radioGlobalService,mpF4Helper)->
+        uniqAId=mpF4Helper.getRandomName("clearing_")
+        divUId = mpF4Helper.getRandomName("clearingdiv_")
+        radioGlobalService.registerRadio($scope,$element,$attrs,$transclude)
+        radios=radioGlobalService.getRadios($attrs.id)
+        idx=radios.length-1
+        $element[0].setAttribute("idx",idx)
+        #set radio element on click attribute to call radioClick(this,id,index)
+        #$element[0].setAttribute("data-ng-click","radioClick(this," + idx + ")")
+        #setAttribute("data-ng-click","radioClick(this," + idx + ")")
+        if $scope.mpSelected == $element[0].value
+          $element[0].setAttribute("CHECKED","true")
+          
+          setTimeout ()->
+            $(document).foundation("forms")
+          ,0
+          
+        radioClick = (ctrl)->
+          $scope.$apply ()->
+            radios=radioGlobalService.getRadios(ctrl.currentTarget.id)
+            $scope.mpSelected=ctrl.currentTarget.value
+          
+        $element.bind("change",radioClick)  
+      
+    ]
+    link: (scope, iElement, iAttrs,$timeout)->
+      
+      return ($scope,iElement,iAttrs,controller)->
+        return
+        
+  }
+  return directiveDefinitionObject
 
+###
+Checkbox directive mp-checkbox
+mp-checked
+mp-checked-value
+mp-unchecked-value
+###
+mpcheckboxDirective = ($parse,$compile,$timeout)->
+  directiveDefinitionObject = {
+    scope: {
+       mpChecked: '='
+       mpCheckedValue: '@'
+       mpUncheckedValue: '@'
+    }
+    priority: 1000
+    #template:'<div class="section-container auto" data-section="" ng-include></div>'
+    replace: false
+    transclude: true
+    restrict: 'A'
+    controller: [
+      "$scope"
+      "$element"
+      "$attrs"
+      "$transclude"
+      "$timeout"
+      "radioGlobalService"
+      "mpF4Helper"
+      ($scope,$element,$attrs,$transclude,$timeout,radioGlobalService,mpF4Helper)->
+        uniqAId=mpF4Helper.getRandomName("clearing_")
+        divUId = mpF4Helper.getRandomName("clearingdiv_")
+        checkValue=true
+        uncheckValue=false
+        if mpF4Helper.type($scope.mpCheckedValue) != "undefined"
+          checkValue=$scope.mpCheckedValue
+        if mpF4Helper.type($scope.mpUncheckedValue) != "undefined"
+          uncheckValue=$scope.mpUncheckedValue
+
+        if mpF4Helper.type($scope.mpCheckedValue) != "undefined"
+          if $scope.mpChecked == checkValue
+            $element[0].setAttribute("checked",true)
+          else
+            if mPF4Helper.type($element[0].checked) != "undefined"
+              delete($element[0].checked)
+            setTimeout ()->
+              $(document).foundation("forms")
+            ,0
+              
+        checkboxClick = (ctrl)->
+          $scope.$apply ()->
+            if ctrl.currentTarget.checked
+              $scope.mpChecked = checkValue
+            else
+              $scope.mpChecked = uncheckValue
+           
+          
+        $element.bind("change",checkboxClick)  
+      
+    ]
+    link: (scope, iElement, iAttrs,$timeout)->
+      
+      return ($scope,iElement,iAttrs,controller)->
+        return
+        
+  }
+  return directiveDefinitionObject
+  
 myF4_DirectiveApp.directive 'mpDropdown', mpdropdownDirective
 myF4_DirectiveApp.directive 'mpDropdownContent', mpdropdownContentDirective
 myF4_DirectiveApp.directive 'mpClearing', mpclearingDirective
 myF4_DirectiveApp.directive 'mpAlertBox', mpalertBoxesDirective
 myF4_DirectiveApp.directive 'mpSection', mpsectionDirective
 myF4_DirectiveApp.directive 'mpSectionContainer', mpsectionContainerDirective
+myF4_DirectiveApp.directive 'mpRadio', mpradioDirective
+myF4_DirectiveApp.directive 'mpCheckbox', mpcheckboxDirective

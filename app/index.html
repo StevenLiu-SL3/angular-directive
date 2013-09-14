@@ -3,7 +3,7 @@
 <!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
 <!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
 <!--[if gt IE 8]><!-->
-<html class="no-js"  ng-app="f4DirectivesApp"  ng-controller="mainController">
+<html class="no-js"  ng-app="f4DirectivesApp"  >
   <!--<![endif]-->
   <head>
     <meta content="text/html; charset=utf-8" http-equiv="content-type">
@@ -13,15 +13,43 @@
     <meta name="viewport" content="width=device-width">
     <script src="bower_components/foundation/js/vendor/custom.modernizr.js"></script>
     <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
-    <!-- build:css(.tmp) styles/main.css -->
-    <link rel="stylesheet" href="styles/main.css">
+    <!-- build:css(.tmp) styles/main1.css -->
+    <link rel="stylesheet" href="styles/main1.css">
     <!-- endbuild -->
   </head>
-  <body>
+  <body ng-controller="mainController">
     <!--[if lt IE 7]>
       <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>    <![endif]-->
     <!--[if lt IE 9]>
       <script src="bower_components/es5-shim/es5-shim.js"></script>      <script src="bower_components/json3/lib/json3.min.js"></script>    <![endif]-->
+      Radio Selected: {{radioSelected}}
+      <form class="custom">
+  <div class="row">
+    <div class="large-4 columns">
+      <label for="radio1"><input name="radio1" type="radio" id="radio1" style="display:none;" value="v1"   mp-radio mp-selected="radioSelected"><span class="custom radio"></span> Radio Button 1</label>
+      <label for="radio1"><input name="radio1" type="radio" id="radio1" style="display:none;" value="v2" mp-radio mp-selected="radioSelected"><span class="custom radio"></span> Radio Button 2</label>
+      <label for="radio1"><input name="radio1" type="radio" id="radio1" disabled style="display:none;"  value="v3" mp-radio mp-selected="radioSelected"><span class="custom radio"></span> Radio Button 3</label>
+    </div>
+    
+    <div class="large-4 columns">
+    Checkbox 1 value: {{checkbox1Value}}
+      <label for="checkbox1"><input type="checkbox" id="checkbox1" style="display: none;" mp-checked="checkbox1Value" mp-checked-value="YES" mp-unchecked-value="NO" mp-checkbox><span class="custom checkbox"></span> Label for Checkbox</label>
+      Checkbox 2 value: {{checkbox2Value}}
+      <label for="checkbox2"><input type="checkbox" id="checkbox2" CHECKED style="display: none;" mp-checked="checkbox2Value" mp-checked-value="ON" mp-unchecked-value="OFF" mp-checkbox><span class="custom checkbox checked"></span> Label for Checkbox</label>
+      Checkbox 3 value: {{checkbox3Value}}
+      <label for="checkbox3"><input type="checkbox" CHECKED id="checkbox3" style="display: none;" mp-checked="checkbox3Value" mp-checked-value="Available" mp-unchecked-value="Unavailable" mp-checkbox><span class="custom checkbox checked"></span> Label for Checkbox</label>
+    </div>
+    <div class="large-4 columns">
+      <label for="customDropdown1">Medium Example</label>
+      <select id="customDropdown1" class="medium">
+        <option DISABLED>This is a dropdown</option>
+        <option>This is another option</option>
+        <option>This is another option too</option>
+        <option>Look, a third option</option>
+      </select>
+    </div>
+  </div>
+</form>
     <div>
       <!-- Add your site or application content here -->
       <div class="panel"> <label>Person name: {{selectedPerson.name}}</label>
@@ -66,6 +94,7 @@
       <p>Content of section 2.</p>
     </div>
   </section>
+  
 </div>
     <!--
     <ul class="clearing-thumbs" data-clearing="abc123"><li><a href="pictures/20130723_135624.jpg"><img data-caption="caption here..." src="pictures/thumb.20130723_135624.jpg"></a></li>  <li><a href="pictures/20130723_135805.jpg"><img data-caption="caption 2 here..." src="pictures/thumb.20130723_135805.jpg"></a></li>  <li><a href="pictures/20130723_140100.jpg"><img data-caption="caption 3 here..." src="pictures/20130723_140100.jpg"></a></li>
@@ -90,10 +119,11 @@
     <script src="bower_components/foundation/js/foundation/foundation.clearing.js"></script>
     <script src="bower_components/foundation/js/foundation/foundation.alerts.js"></script>
     <script src="bower_components/foundation/js/foundation/foundation.section.js"></script>
+    <script src="bower_components/foundation/js/foundation/foundation.forms.js"></script>
 
-    <script src="bower_components/angular/angular.js"></script>
+    <script src="bower_components/angular-unstable/angular.js"></script>
       <script src="scripts/f4_directives.js"></script>
-    <script src="scripts/app.js"></script>
+    <script src="scripts/directive_app.js"></script>
 
     <!-- build:js({.tmp,app}) scripts/scripts.js -->
     <!-- endbuild -->
