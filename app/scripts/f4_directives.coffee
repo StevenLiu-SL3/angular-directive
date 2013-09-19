@@ -966,9 +966,12 @@ mpswitchDirective = ($parse, $compile, $timeout) ->
       mpChecked: "="
       mpCheckedValue: "@"
       mpUncheckedValue: "@"
+      tipTitle: "@"
+      tipClass: "@"
 
     priority: 1000
     replace: true
+    template: '<div></div>'
     transclude: false
     restrict: "E"
     controller: ["$scope", "$element", "$attrs", "$transclude", "$timeout", "radioGlobalService", "mpF4Helper", ($scope, $element, $attrs, $transclude, $timeout, radioGlobalService, mpF4Helper) ->
@@ -976,6 +979,14 @@ mpswitchDirective = ($parse, $compile, $timeout) ->
       uniqName = "switch-" + uniqAId
       uniqId1 = uniqAId
       uniqId2 = uniqAId + "1"
+      if angular.isUndefined($scope.tipTitle)
+        tipTitle=""
+      else
+        tipTitle=$scope.tipTitle
+      if angular.isUndefined($scope.tipClass)
+        tipClass="has-tip"
+      else
+        tipClass=$scope.tipClass
       if angular.isUndefined($scope.mpClass)
         mpClass = "switch"
       else
@@ -984,15 +995,21 @@ mpswitchDirective = ($parse, $compile, $timeout) ->
       uncheckValue = "OFF"
       checkValue = $scope.mpCheckedValue  if angular.isDefined($scope.mpCheckedValue)
       uncheckValue = $scope.mpUncheckedValue  if angular.isDefined($scope.mpUncheckedValue)
-      makeTemplate = (unCheckV, checkV, defaultV, replace) ->
-        line1 = "<div>"  unless replace
-        line1 = "<div class=\"{0}\">"
+      makeTemplate = (unCheckV, checkV, defaultV, tipC,tipT,replace) ->
+        line1 = ""
+        
+        if tipT == ""
+          line1 = "<div>"
+        else
+          line1 = '<div class="' + tipC + '" title="' + tipT + '">'
+
+        line1 = line1 + "<div class=\"{0}\">"
         line1 = line1 + "<input id=\"{1}\" name=\"{2}\" type=\"{3}\" {4} >"
         line1 = line1 + "<label for=\"{5}\" onclick=\"\" ng-click=\"labelClick(this,false)\">{6}</label>"
         line1 = line1 + "<input id=\"{7}\" name=\"{8}\" type=\"{9}\" {10} >"
         line1 = line1 + "<label for=\"{11}\" onclick=\"\" ng-click=\"labelClick(this,true)\">{12}</label>"
         line1 = line1 + "</div>"
-        line1 = line1 + "</div>"  unless replace
+        line1 = line1 + "</div>"
         line1 = line1.replace("{0}", mpClass)
         line1 = line1.replace("{1}", uniqId1)
         line1 = line1.replace("{2}", uniqName)
@@ -1023,9 +1040,9 @@ mpswitchDirective = ($parse, $compile, $timeout) ->
           $(document).foundation "forms"
         ), 0
 
-      makeTemplate uncheckValue, checkValue, $scope.mpChecked, false
+      makeTemplate uncheckValue, checkValue, $scope.mpChecked,tipClass,tipTitle, false
       $scope.$watch "mpChecked", (newValue, oldValue) ->
-        makeTemplate uncheckValue, checkValue, newValue, true
+        makeTemplate uncheckValue, checkValue, newValue, tipClass, tipTitle, true
 
       checkboxClick = (ctrl) ->
         $scope.$apply ->
@@ -1035,7 +1052,7 @@ mpswitchDirective = ($parse, $compile, $timeout) ->
           $scope.mpChecked = uncheckValue  if mpF4Helper.type(soff) isnt "undefined" and soff is true
           $scope.mpChecked = checkValue  if mpF4Helper.type(son) isnt "undefined" and son is true
         
-
+    
 
       $element.bind "change", checkboxClick
       labelClick = (ctrl, value) ->
