@@ -729,13 +729,23 @@ mpradioDirective = ($parse, $compile, $timeout) ->
         setTimeout (->
           $(document).foundation "forms"
         ), 0
-
+      radioClick = (ctrl) ->
+        $scope.$apply ->
+          input=$element.find("input")
+          #radios = radioGlobalService.getRadios(ctrl.currentTarget.id)
+          $scope.mpSelected = input[0].value
+      $scope.$watch "mpSelected", (newValue, oldValue) ->
+        if angular.isDefined(newValue)
+          setMPValue newValue 
+      
       disabled=angular.isDefined($element[0].disabled)
       mpValue=$element[0].getAttribute("mp-value")
       checked=false
       if mpValue == $scope.mpSelected
         checked=true
-
+      if $element[0].id isnt ""
+        $attrs.mpId=$element[0].id
+        $element[0].id=''
       makeTemplate($attrs.mpId,leftLabel,rightLabel,tipClass,tipTitle,mpValue,disabled,checked,$element,true)
       #radioGlobalService.registerRadio $scope, $element, $attrs, $transclude
       #radios = radioGlobalService.getRadios($attrs.id)
@@ -750,16 +760,9 @@ mpradioDirective = ($parse, $compile, $timeout) ->
           ), 0
 
       setMPValue $scope.mpSelected
-      radioClick = (ctrl) ->
-        $scope.$apply ->
-          input=$element.find("input")
-          #radios = radioGlobalService.getRadios(ctrl.currentTarget.id)
-          $scope.mpSelected = input[0].value
-    
+      
       $element.bind "change", radioClick
-      $scope.$watch "mpSelected", (newValue, oldValue) ->
-        if angular.isDefined(newValue)
-          setMPValue newValue
+   
 
     ]
     link: (scope, iElement, iAttrs, $timeout) ->
