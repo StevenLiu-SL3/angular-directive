@@ -26,18 +26,30 @@
       <form class="custom">
   <div class="row">
     <div class="large-4 columns">
-      <label for="radio1"><input name="radio1" type="radio" id="radio1" style="display:none;" value="v1"   mp-radio mp-selected="radioSelected"><span class="custom radio"></span> Radio Button 1</label>
-      <label for="radio1"><input name="radio1" type="radio" id="radio1" style="display:none;" value="v2" mp-radio mp-selected="radioSelected"><span class="custom radio"></span> Radio Button 2</label>
-      <label for="radio1"><input name="radio1" type="radio" id="radio1" disabled style="display:none;"  value="v3" mp-radio mp-selected="radioSelected"><span class="custom radio"></span> Radio Button 3</label>
+      <mp-radio id="radio1" mp-value="v1"  mp-selected="radioSelected" mp-right-label="Radio Button 1"></mp-radio>    
+      <mp-radio id="radio1" mp-value="v2"  mp-selected="radioSelected" mp-right-label="Radio Button 2"></mp-radio>
+      <mp-radio id="radio1" disabled mp-value="v3" tip-title="Radio3 tooltip"  mp-selected="radioSelected" mp-right-label="Radio Button 3"></mp-radio>
+
+       <mp-radio id="radio2" mp-value="v1"  mp-selected="radioSelected" mp-right-label="Radio Button 1"></mp-radio>    
+      <mp-radio id="radio2" mp-value="v2"  mp-selected="radioSelected" mp-right-label="Radio Button 2"></mp-radio>
+      <mp-radio id="radio2" disabled mp-value="v3" tip-title="Radio3 tooltip"  mp-selected="radioSelected" mp-right-label="Radio Button 3"></mp-radio>
     </div>
     
     <div class="large-4 columns">
     Checkbox 1 value: {{checkbox1Value}}
-      <label for="checkbox1"><input type="checkbox" id="checkbox1" style="display: none;" mp-checked="checkbox1Value" mp-checked-value="YES" mp-unchecked-value="NO" mp-checkbox><span class="custom checkbox"></span> Label for Checkbox</label>
+      <mp-checkbox  id="checkbox1" mp-checked="checkbox1Value" mp-checked-value="YES" mp-unchecked-value="NO" mp-right-label="Label for Checkbox1" tip-title="Checkbox 1 tip"></mp-checkbox>
       Checkbox 2 value: {{checkbox2Value}}
-      <label for="checkbox2"><input type="checkbox" id="checkbox2" CHECKED style="display: none;" mp-checked="checkbox2Value" mp-checked-value="ON" mp-unchecked-value="OFF" mp-checkbox><span class="custom checkbox checked"></span> Label for Checkbox</label>
+      <mp-checkbox id="checkbox2" CHECKED  mp-checked="checkbox2Value" mp-checked-value="ON" mp-unchecked-value="OFF" mp-right-label="Label for checkbox 2"></mp-checkbox>
       Checkbox 3 value: {{checkbox3Value}}
-      <label for="checkbox3"><input type="checkbox" CHECKED id="checkbox3" style="display: none;" mp-checked="checkbox3Value" mp-checked-value="Available" mp-unchecked-value="Unavailable" mp-checkbox><span class="custom checkbox checked"></span> Label for Checkbox</label>
+      <mp-checkbox CHECKED id="checkbox3" mp-checked="checkbox3Value" mp-checked-value="Available" mp-unchecked-value="Unavailable" mp-right-label="Label for checkbox3"></mp-checkbox>
+
+    Checkbox 1 value: {{checkbox1Value}}
+      <mp-checkbox  id="checkbox4" mp-checked="checkbox1Value" mp-checked-value="YES" mp-unchecked-value="NO" mp-right-label="Label for Checkbox4" tip-title="Checkbox 1 tip"></mp-checkbox>
+      Checkbox 2 value: {{checkbox2Value}}
+      <mp-checkbox id="checkbox5" CHECKED  mp-checked="checkbox2Value" mp-checked-value="ON" mp-unchecked-value="OFF" mp-right-label="Label for checkbox 5"></mp-checkbox>
+      Checkbox 3 value: {{checkbox3Value}}
+      <mp-checkbox CHECKED id="checkbox6" mp-checked="checkbox3Value" mp-checked-value="Available" mp-unchecked-value="Unavailable" mp-right-label="Label for checkbox6"></mp-checkbox>
+
     </div>
     <div class="large-4 columns">
       <label for="customDropdown1">Medium Example</label>
@@ -49,16 +61,20 @@
       </select>
     </div>
   </div>
+  SWITCH VALUE: {{switchValue}}
+  <mp-switch mp-checked="switchValue" tip-title="Switch tooltip"></mp-switch>
+   <mp-switch mp-checked="switchValue" tip-title="Switch tooltip2"></mp-switch>
+
 </form>
     <div>
       <!-- Add your site or application content here -->
       <div class="panel"> <label>Person name: {{selectedPerson.name}}</label>
         <!-- dropdown button --> <mp-dropdown dropdown-title="Person" dropdown-list="dropdownListData"
           dropdown-model="selectedPerson" dropdown-var="va" dropdown-repeat-text="va.name"
-          dropdown-button-class="button dropdown"></mp-dropdown> </div>
+          dropdown-button-class="button dropdown" tip-title="Click to drop down list"></mp-dropdown> </div>
       <div class="panel"> <label> Content Dropdown</label> <mp-dropdown-content
           dropdown-title="404 Content" dropdown-list="Roles" dropdown-src="'404_content.html'"
-          dropdown-content-class="f-dropdown content medium" dropdown-button-class="button dropdown"></mp-dropdown-content>
+          dropdown-content-class="f-dropdown content medium" dropdown-button-class="button dropdown" tip-title="Click to drop content"></mp-dropdown-content>
       </div>
       <div class="panel"> <label>Clearing</label> </div>
       <div mp-clearing clearing-image-list="imageListData"></div>

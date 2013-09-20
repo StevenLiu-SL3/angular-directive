@@ -92,7 +92,7 @@ myF4_DirectiveApp.service "radioGlobalService", ["mpF4Helper", (mpF4Helper) ->
 #     
 #     where dropdown-list is a scope variable array, dropdown-model is a element of the array
 #  
-mpdropdownDirective = ($parse, $compile, $timeout) ->
+mpdropdownDirective = ($parse, $compile, $timeout, mpF4Helper) ->
  
   valueIdentifier = null
   keyIdentifier = null
@@ -143,28 +143,31 @@ mpdropdownDirective = ($parse, $compile, $timeout) ->
     restrict: "AE"
     controller: ["$scope", "$element", "$attrs", "$transclude", "$timeout", "mpF4Helper", ($scope, $element, $attrs, $transclude, $timeout, mpF4Helper) ->
     
-      setValueIdentifier $attrs.dropdownVar
-      setScopeVariableName $attrs.dropdownList
+    ]
+    link: (scope, iElement, iAttrs) ->
+
+      setValueIdentifier iAttrs.dropdownVar
+      setScopeVariableName iAttrs.dropdownList
       uniqAId = mpF4Helper.getRandomName("dropdown_")
-      if angular.isUndefined($scope.tipTitle)
+      if angular.isUndefined(scope.tipTitle)
         tipTitle=""
       else
-        tipTitle=$scope.tipTitle
-      if angular.isUndefined($scope.tipClass)
+        tipTitle=scope.tipTitle
+      if angular.isUndefined(scope.tipClass)
         tipClass="has-tip"
       else
-        tipClass=$scope.tipClass
+        tipClass=scope.tipClass
 
 
-      if $scope.dropdownButtonClass
-        buttonClass = $scope.dropdownButtonClass
+      if scope.dropdownButtonClass
+        buttonClass = scope.dropdownButtonClass
       else
         buttonClass = "button dropdown"
       if tipTitle != ""
         buttonClass=buttonClass + " " + tipClass
 
       stemplate1 = ""
-      if $attrs.dropdownSplitButton?
+      if iAttrs.dropdownSplitButton?
         stemplate1 = "<div>"
         stemplate1 = stemplate1 + "<a ng-href=\"\" data-dropdown=\"{0}\" class=\"{1}\" {3}>{2}<span data-dropdown=\"{0}\"></span></a>"
       else        
@@ -173,7 +176,7 @@ mpdropdownDirective = ($parse, $compile, $timeout) ->
       stemplate1 = stemplate1.replace("{0}", uniqAId)
       stemplate1 = stemplate1.replace("{0}", uniqAId)
       stemplate1 = stemplate1.replace("{1}", buttonClass)
-      stemplate1 = stemplate1.replace("{2}", $scope.dropdownTitle)
+      stemplate1 = stemplate1.replace("{2}", scope.dropdownTitle)
       if tipTitle!=""
         stemplate1 = stemplate1.replace("{3}",'title="' + tipTitle + '"')
       else
@@ -193,7 +196,7 @@ mpdropdownDirective = ($parse, $compile, $timeout) ->
           vaGetter = $parse(vi)
           vaSetter = vaGetter.assign
           vaSetter tempObj, v
-          vaTextGetter = $parse($attrs.dropdownRepeatText)
+          vaTextGetter = $parse(iAttrs.dropdownRepeatText)
           txt = vaTextGetter(tempObj)
           fnName = "selectItem(this," + i + ")"
           smiddle1 = stemplate3.replace("{0}", fnName)
@@ -202,18 +205,18 @@ mpdropdownDirective = ($parse, $compile, $timeout) ->
           smiddle = smiddle + smiddle3
           i++
         stemplate = stemplate1 + stemplate2 + smiddle + stemplate4
-        $element.append $compile(stemplate)($scope)
+        iElement.append $compile(stemplate)(scope)
 
       stemplate = ""
-      resolvedType = mpF4Helper.type($scope.dropdownList.$resolved)
-      if resolvedType isnt "undefined" and $scope.dropdownList.$resolved is false
-        $scope.dropdownList.$promise.then (value) ->
+      resolvedType = mpF4Helper.type(scope.dropdownList.$resolved)
+      if resolvedType isnt "undefined" and scope.dropdownList.$resolved is false
+        scope.dropdownList.$promise.then (value) ->
           makeTemplate value
 
       else
-        value = $scope.dropdownList
+        value = scope.dropdownList
         makeTemplate value
-      $scope.selectItem = (self, idx) ->
+      scope.selectItem = (self, idx) ->
         self1 = self
         i = idx
         resolvedType = mpF4Helper.type(@dropdownList.$resolved)
@@ -223,9 +226,7 @@ mpdropdownDirective = ($parse, $compile, $timeout) ->
 
         else
           @dropdownModel = @dropdownList[idx]
-    ]
-    link: (scope, iElement, iAttrs, $timeout) ->
-      ($scope, iElement, iAttrs, controller) ->
+
 
   directiveDefinitionObject
 
@@ -234,7 +235,7 @@ mpdropdownDirective = ($parse, $compile, $timeout) ->
 #  
 #            <mp-dropdown-content dropdown-title="Partials Content" dropdown-list="Roles" dropdown-src="'/Partials/View1.html'" dropdown-content-class="f-dropdown content medium" dropdown-split-button  dropdown-button-class="button split" dropdown-split-button></mp-dropdown-content>
 #  
-mpdropdownContentDirective = ($parse, $compile, $timeout) ->
+mpdropdownContentDirective = ($parse, $compile, $timeout, mpF4Helper) ->
   directiveDefinitionObject =
     scope:
       dropdownSrc: "@"
@@ -249,38 +250,40 @@ mpdropdownContentDirective = ($parse, $compile, $timeout) ->
     trsnaclude: false
     restrict: "AE"
     controller: ["$scope", "$element", "$attrs", "$transclude", "$timeout", "mpF4Helper", ($scope, $element, $attrs, $transclude, $timeout, mpF4Helper) ->
+    ]
+    link: (scope, iElement, iAttrs) ->
       uniqAId = mpF4Helper.getRandomName("dropdown_")
 
-      if angular.isUndefined($scope.tipTitle)
+      if angular.isUndefined(scope.tipTitle)
         tipTitle=""
       else
-        tipTitle=$scope.tipTitle
-      if angular.isUndefined($scope.tipClass)
+        tipTitle=scope.tipTitle
+      if angular.isUndefined(scope.tipClass)
         tipClass="has-tip"
       else
-        tipClass=$scope.tipClass
+        tipClass=scope.tipClass
 
 
-      if $scope.dropdownButtonClass
-        buttonClass = $scope.dropdownButtonClass
+      if scope.dropdownButtonClass
+        buttonClass = scope.dropdownButtonClass
       else
         buttonClass = "button"
 
       if tipTitle != ""
         butonClass = buttonClass + " " + tipClass
 
-      if $scope.dropdownContentClass?
-        contentClass = $scope.dropdownContentClass
+      if scope.dropdownContentClass?
+        contentClass = scope.dropdownContentClass
       else
         contentClass = "f-dropdown content medium"
       stemplate1 = ""
-      if $attrs.dropdownSplitButton?
+      if iAttrs.dropdownSplitButton?
         stemplate1 = "<div>" + "<a ng-href=\"\" data-dropdown=\"{0}\" class=\"{1}\" {3}>{2}<span></span></a>"
       else
         stemplate1 = "<div>" + "<a ng-href=\"\" data-dropdown=\"{0}\" class=\"{1}\" {3}>{2}</a>"
       stemplate1 = stemplate1.replace("{0}", uniqAId)
       stemplate1 = stemplate1.replace("{1}", buttonClass)
-      stemplate1 = stemplate1.replace("{2}", $scope.dropdownTitle)
+      stemplate1 = stemplate1.replace("{2}", scope.dropdownTitle)
       if tipTitle!=""
         stemplate1 = stemplate1.replace("{3}",'title="' + tipTitle + '"')
       else
@@ -291,14 +294,12 @@ mpdropdownContentDirective = ($parse, $compile, $timeout) ->
       stemplate3 = "<ng-include src=\"{0}\"><ng-include>"
       stemplate4 = "</div>"
       stemplate = ""
-      value = $scope.dropdownSrc
+      value = scope.dropdownSrc
       stemplate3 = stemplate3.replace("{0}", value)
       stemplate = stemplate1 + stemplate2 + stemplate3 + stemplate4
-      $element.append $compile(stemplate)($scope)
-      $scope.selectItem = (self, idx) ->
-    ]
-    link: (scope, iElement, iAttrs, $timeout) ->
-      ($scope, iElement, iAttrs, controller) ->
+      iElement.append $compile(stemplate)(scope)
+      scope.selectItem = (self, idx) ->
+  
 
   directiveDefinitionObject
 
@@ -306,7 +307,7 @@ mpdropdownContentDirective = ($parse, $compile, $timeout) ->
 #
 #  mpClearing
 #  
-mpclearingDirective = ($parse, $compile, $timeout) ->
+mpclearingDirective = ($parse, $compile, $timeout, mpF4Helper) ->
   directiveDefinitionObject =
     scope:
       clearingClass: "@"
@@ -319,16 +320,19 @@ mpclearingDirective = ($parse, $compile, $timeout) ->
     trsnaclude: false
     restrict: "AE"
     controller: ["$scope", "$element", "$attrs", "$transclude", "$timeout", "mpF4Helper", ($scope, $element, $attrs, $transclude, $timeout, mpF4Helper) ->
+
+    ]
+    link: (scope, iElement, iAttrs, $timeout) ->
       uniqAId = mpF4Helper.getRandomName("clearing_")
       divUId = mpF4Helper.getRandomName("clearingdiv_")
-      if $scope.clearingClass
-        clearingClass = $scope.clearingClass
+      if scope.clearingClass
+        clearingClass = scope.clearingClass
       else
         clearingClass = "clearing-thumbs"
       imageDir = "pictures/"
-      imageDir = $scope.clearingImageDir  if $scope.clearingImageDir
+      imageDir = scope.clearingImageDir  if scope.clearingImageDir
       thumbDir = "pictures/"
-      thumbDir = $scope.clearingThumbDir  if $scope.clearingThumbDir
+      thumbDir = scope.clearingThumbDir  if scope.clearingThumbDir
       makeTemplate = (uid, value, breplace) ->
         iLength = value.length
         i = 0
@@ -353,24 +357,24 @@ mpclearingDirective = ($parse, $compile, $timeout) ->
         stemplatepre = "<ul class=\"" + clearingClass + "\" data-clearing=\"" + uid + "\">" + smiddle + "</ul>"
         stemplate = "<div id=\"" + divUId + "\">" + stemplatepre + "</div>"
         unless breplace
-          $element.append $compile(stemplate)($scope)
+          iElement.append $compile(stemplate)(scope)
         else
-          $element.find("div").remove()
-          $element.append $compile(stemplatepre)($scope)
+          iElement.find("div").remove()
+          iElement.append $compile(stemplatepre)(scope)
 
-      listType = mpF4Helper.type($scope.clearingImageList)
+      listType = mpF4Helper.type(scope.clearingImageList)
       if listType is "undefined"
         imageListType = "undefined"
       else
-        imageListType = mpF4Helper.type($scope.clearingImageList.$resolved)
-      if imageListType isnt "undefined" and $scope.clearingImageList.$resolved is false
-        $scope.clearingImageList.$promise.then (value) ->
+        imageListType = mpF4Helper.type(scope.clearingImageList.$resolved)
+      if imageListType isnt "undefined" and scope.clearingImageList.$resolved is false
+        scope.clearingImageList.$promise.then (value) ->
           makeTemplate uniqAId, value, false
 
       else
-        value = $scope.clearingImageList
+        value = scope.clearingImageList
         makeTemplate uniqAId, value, false  if value
-      $scope.$watch "clearingImageList", (newValue, oldValue) ->
+      scope.$watch "clearingImageList", (newValue, oldValue) ->
         if newValue isnt oldValue
           uniqAId = mpF4Helper.getRandomName("clearing_")
           makeTemplate uniqAId, newValue, true
@@ -378,20 +382,17 @@ mpclearingDirective = ($parse, $compile, $timeout) ->
             $(document).foundation "clearing"
           ), 0
 
-    ]
-    link: (scope, iElement, iAttrs, $timeout) ->
       setTimeout (->
         $(document).foundation "clearing"
       ), 0
-      ($scope, iElement, iAttrs, controller) ->
-
+    
   directiveDefinitionObject
 
 
 #
 #  mpAlertBox
 #  
-mpalertBoxesDirective = ($parse, $compile, $timeout) ->
+mpalertBoxesDirective = ($parse, $compile, $timeout, mpF4Helper) ->
   directiveDefinitionObject =
     scope:
       alertClass: "@"
@@ -404,18 +405,21 @@ mpalertBoxesDirective = ($parse, $compile, $timeout) ->
     trsnaclude: false
     restrict: "AE"
     controller: ["$scope", "$element", "$attrs", "$transclude", "$timeout", "mpF4Helper", ($scope, $element, $attrs, $transclude, $timeout, mpF4Helper) ->
+
+    ]
+    link: (scope, iElement, iAttrs) ->
       uniqAId = mpF4Helper.getRandomName("clearing_")
       divUId = mpF4Helper.getRandomName("clearingdiv_")
-      if $scope.alertClass
-        alertClass = $scope.alertClass
+      if scope.alertClass
+        alertClass = scope.alertClass
       else
         alertClass = "alert-box"
-      if $scope.alertCloseClass
-        alertCloseClass = $scope.alertCloseClass
+      if scope.alertCloseClass
+        alertCloseClass = scope.alertCloseClass
       else
         alertCloseClass = "close"
-      if $scope.alertCloseSymbol
-        alertCloseSymbol = $scope.alertCloseSymbol
+      if scope.alertCloseSymbol
+        alertCloseSymbol = scope.alertCloseSymbol
       else
         alertCloseSymbol = "&times;"
       makeTemplate = (uid, value, breplace) ->
@@ -426,22 +430,22 @@ mpalertBoxesDirective = ($parse, $compile, $timeout) ->
         stemplate4 = "</div>"
         unless breplace
           stemplate = stemplate1 + stemplate2 + smiddle + stemplate3 + stemplate4
-          $element.append $compile(stemplate)($scope)
+          iElement.append $compile(stemplate)(scope)
         else
           stemplate = stemplate2 + smiddle + stemplate3
-          $element.find("div").remove()
-          $element.append $compile(stemplate)($scope)
+          iElement.find("div").remove()
+          iElement.append $compile(stemplate)(scope)
 
-      contentType = mpF4Helper.type($scope.alertContent)
-      contentTypeResolved = mpF4Helper.type($scope.alertContent.$resolved)  if contentType isnt "undefined"
-      if contentTypeResolved isnt "undefined" and $scope.contentType.$resolved is false
-        $scope.alertContent.$promise.then (value) ->
+      contentType = mpF4Helper.type(scope.alertContent)
+      contentTypeResolved = mpF4Helper.type(scope.alertContent.$resolved)  if contentType isnt "undefined"
+      if contentTypeResolved isnt "undefined" and scope.contentType.$resolved is false
+        scope.alertContent.$promise.then (value) ->
           makeTemplate uniqAId, value, false
 
       else
-        value = $scope.alertContent
+        value = scope.alertContent
         makeTemplate uniqAId, value, false  if value
-      $scope.$watch "clearingImageList", (newValue, oldValue) ->
+      scope.$watch "clearingImageList", (newValue, oldValue) ->
         if newValue isnt oldValue
           uniqAId = mpF4Helper.getRandomName("alertbox_")
           makeTemplate uniqAId, newValue, true
@@ -449,92 +453,10 @@ mpalertBoxesDirective = ($parse, $compile, $timeout) ->
             $(document).foundation "alerts"
           ), 0
 
-    ]
-    link: (scope, iElement, iAttrs, $timeout) ->
       setTimeout (->
         $(document).foundation "alerts"
       ), 0
-      ($scope, iElement, iAttrs, controller) ->
-
-  directiveDefinitionObject
-
-
-#
-#  mpSection
-#  
-mpsectionDirective = ($parse, $compile, $timeout) ->
-  directiveDefinitionObject =
-    scope:
-      sectionTitleClass: "@"
-      sectionTitle: "@"
-      sectionContentClass: "@"
-      sectionHref: "@"
-      sectionContent: "@"
-      sectionIncludeSrc: "@"
-      sectionRepeat: "@"
-
-    priority: 1000
-    replace: true
-    transclude: false
-    restrict: "A"
-    controller: ["$scope", "$element", "$attrs", "$transclude", "$timeout", "mpF4Helper", ($scope, $element, $attrs, $transclude, $timeout, mpF4Helper) ->
-      uniqAId = mpF4Helper.getRandomName("clearing_")
-      divUId = mpF4Helper.getRandomName("clearingdiv_")
-      if $scope.sectionTitleClass
-        sectionTitleClass = $scope.sectionTitleClass
-      else
-        sectionTitleClass = "title"
-      if $scope.sectionTitle
-        sectionTitle = $scope.sectionTitle
-      else
-        sectionTitle = "Section Title"
-      if $scope.sectionContentClass
-        sectionContentClass = $scope.sectionContentClass
-      else
-        sectionContentClass = "content"
-      if $scope.sectionHref
-        sectionHref = $scope.sectionHref
-      else
-        sectionHref = ""
-      if $scope.sectionContent
-        sectionContent = $scope.sectionContent
-      else
-        sectionContent = "<p>Section Content</p>"
-      if $scope.sectionIncludeSrc
-        sectionIncludeSrc = $scope.sectionIncludeSrc
-      else
-        sectionIncludeSrc = ""
-      makeTemplate = (uid, value, breplace) ->
-        stemplate1 = "<div>"
-        stemplate2 = "<section>"
-        stemplate3 = "<p class=\"" + sectionTitleClass + "\" data-section-title><a href=\"" + sectionHref + "\">" + sectionTitle + "</a></p>"
-        sectionContent = "<ng-include src=\"" + sectionIncludeSrc + "\"></ng-include>"  if sectionIncludeSrc isnt ""
-        stemplate4 = "<div class=\"" + sectionContentClass + "\" data-section-content>" + sectionContent + "</div>"
-        stemplate5 = "</section>"
-        stemplate6 = "</div>"
-        unless breplace
-          stemplate = stemplate1 + stemplate2 + stemplate3 + stemplate4 + stemplate5 + stemplate6
-          $element.append $compile(stemplate)($scope)
-        else
-          stemplate = stemplate2 + stemplate3 + stemplate4 + stemplate5
-          $element.find("div").remove()
-          $element.append $compile(stemplate)($scope)
-
-      makeTemplate uniqAId, null, false
-      $scope.$watch "sectionContent", (newValue, oldValue) ->
-        if newValue isnt oldValue
-          uniqAId = mpF4Helper.getRandomName("section_")
-          makeTemplate uniqAId, newValue, true
-          setTimeout (->
-            $(document).foundation "section"
-          ), 0
-
-    ]
-    link: (scope, iElement, iAttrs, $timeout) ->
-      setTimeout (->
-        $(document).foundation "section"
-      ), 0
-      ($scope, iElement, iAttrs, controller) ->
+      
 
   directiveDefinitionObject
 
@@ -545,7 +467,7 @@ mpsectionDirective = ($parse, $compile, $timeout) ->
 #  [{title:"",content:"",src:'',include:false,titleClass:"",contentClass:"",href:""}]
 #  when include is true src would be the url point to a partial html file
 #  
-mpsectionContainerDirective = ($parse, $compile, $timeout) ->
+mpsectionContainerDirective = ($parse, $compile, $timeout, mpF4Helper) ->
 
   directiveDefinitionObject =
     scope:
@@ -559,22 +481,25 @@ mpsectionContainerDirective = ($parse, $compile, $timeout) ->
     transclude: true
     restrict: "AE"
     controller: ["$scope", "$element", "$attrs", "$transclude", "$timeout", "mpF4Helper", ($scope, $element, $attrs, $transclude, $timeout, mpF4Helper) ->
+    
+    ]
+    link: (scope, iElement, iAttrs) ->
       uniqAId = mpF4Helper.getRandomName("clearing_")
       divUId = mpF4Helper.getRandomName("clearingdiv_")
-      if $scope.containerClass
-        containerClass = $scope.containerClass
+      if scope.containerClass
+        containerClass = scope.containerClass
       else
         containerClass = "section-container auto"
-      if $scope.containerDataSection
-        containerDataSection = $scope.containerDataSection
+      if scope.containerDataSection
+        containerDataSection = scope.containerDataSection
       else
         containerDataSection = ""
-      if $scope.containerDataOption
-        containerDataOption = $scope.containerDataOption
+      if scope.containerDataOption
+        containerDataOption = scope.containerDataOption
       else
         containerDataOption = ""
-      if $scope.sectionList
-        sectionList = $scope.sectionList
+      if scope.sectionList
+        sectionList = scope.sectionList
       else
         return
       setSectionDefault = (oItem) ->
@@ -624,13 +549,13 @@ mpsectionContainerDirective = ($parse, $compile, $timeout) ->
           stemplate1
 
       stemplate = makeTemplate(sectionList, true)
-      $element.append $compile(stemplate)($scope)
-      $scope.$watch "sectionList", (newValue, oldValue) ->
+      iElement.append $compile(stemplate)(scope)
+      scope.$watch "sectionList", (newValue, oldValue) ->
         if newValue isnt oldValue
           stemplate
           sline = makeTemplate(neValue, false)
-          $element.find("div").remove()
-          $element.append $compile(sline)($scope)
+          iElement.find("div").remove()
+          iElement.append $compile(sline)(scope)
           setTimeout (->
             $(document).foundation "section"
           ), 0
@@ -638,13 +563,11 @@ mpsectionContainerDirective = ($parse, $compile, $timeout) ->
       setTimeout (->
         $(document).foundation "section"
       ), 0
-    ]
-    link: (scope, iElement, iAttrs, $timeout) ->
       setTimeout (->
         scope.$apply()
         $(document).foundation "section"
       ), 0
-      ($scope, iElement, iAttrs, controller) ->
+  
 
   directiveDefinitionObject
 
@@ -653,7 +576,7 @@ mpsectionContainerDirective = ($parse, $compile, $timeout) ->
 #  Radio directive mp-radio
 #  model mp-selected
 #  
-mpradioDirective = ($parse, $compile, $timeout) ->
+mpradioDirective = ($parse, $compile, $timeout,mpF4Helper) ->
   directiveDefinitionObject =
     scope:
       mpSelected: "="
@@ -670,26 +593,30 @@ mpradioDirective = ($parse, $compile, $timeout) ->
     transclude: false
     restrict: "AE"
     controller: ["$scope", "$element", "$attrs", "$transclude", "$timeout", "radioGlobalService", "mpF4Helper", ($scope, $element, $attrs, $transclude, $timeout, radioGlobalService, mpF4Helper) ->
-      if angular.isUndefined($scope.tipTitle)
+   
+
+    ]
+    link: (scope, iElement, iAttrs) ->
+      if angular.isUndefined(scope.tipTitle)
         tipTitle=""
       else
-        tipTitle=$scope.tipTitle
-      if angular.isUndefined($scope.tipClass)
+        tipTitle=scope.tipTitle
+      if angular.isUndefined(scope.tipClass)
         tipClass="has-tip"
       else
-        tipClass=$scope.tipClass
-      if angular.isUndefined($scope.mpLeftLabel)
+        tipClass=scope.tipClass
+      if angular.isUndefined(scope.mpLeftLabel)
         leftLabel=""
       else
-        leftLabel=$scope.mpLeftLabel
-      if angular.isUndefined($scope.mpRightLabel)
+        leftLabel=scope.mpLeftLabel
+      if angular.isUndefined(scope.mpRightLabel)
         rightLabel=""
       else
-        rightLabel=$scope.mpRightLabel
-      if angular.isUndefined($scope.mpValue)
+        rightLabel=scope.mpRightLabel
+      if angular.isUndefined(scope.mpValue)
         mpValue=""
       else
-        mpValue=$scope.mpValue
+        mpValue=scope.mpValue
 
       makeTemplate = (id,lLabel,rLabel,tipC,tipT,value,disabled,checked,element,replace)->
         #element[0].removeAttribute("mp-radio")
@@ -722,51 +649,47 @@ mpradioDirective = ($parse, $compile, $timeout) ->
           template1 = template1.replace("{2}", 'title="' + tipT + '"')
 
         if !replace
-          $element.append($compile(template1)($scope))
+          iElement.append($compile(template1)(scope))
         else
-          $element.find("div").remove()
-          $element.append $compile(template1)($scope)
+          iElement.find("div").remove()
+          iElement.append $compile(template1)(scope)
         setTimeout (->
           $(document).foundation "forms"
         ), 0
       radioClick = (ctrl) ->
-        $scope.$apply ->
-          input=$element.find("input")
+        scope.$apply ->
+          input=iElement.find("input")
           #radios = radioGlobalService.getRadios(ctrl.currentTarget.id)
-          $scope.mpSelected = input[0].value
-      $scope.$watch "mpSelected", (newValue, oldValue) ->
+          scope.mpSelected = input[0].value
+      scope.$watch "mpSelected", (newValue, oldValue) ->
         if angular.isDefined(newValue)
           setMPValue newValue 
       
-      disabled=angular.isDefined($element[0].disabled)
-      mpValue=$element[0].getAttribute("mp-value")
+      disabled=angular.isDefined(iElement[0].disabled)
+      mpValue=iElement[0].getAttribute("mp-value")
       checked=false
-      if mpValue == $scope.mpSelected
+      if mpValue == scope.mpSelected
         checked=true
-      if $element[0].id isnt ""
-        $attrs.mpId=$element[0].id
-        $element[0].id=''
-      makeTemplate($attrs.mpId,leftLabel,rightLabel,tipClass,tipTitle,mpValue,disabled,checked,$element,true)
-      #radioGlobalService.registerRadio $scope, $element, $attrs, $transclude
-      #radios = radioGlobalService.getRadios($attrs.id)
+      if iElement[0].id isnt ""
+        iAttrs.mpId=iElement[0].id
+        iElement[0].id=''
+      makeTemplate(iAttrs.mpId,leftLabel,rightLabel,tipClass,tipTitle,mpValue,disabled,checked,iElement,true)
+      #radioGlobalService.registerRadio scope, iElement, iAttrs, $transclude
+      #radios = radioGlobalService.getRadios(iAttrs.id)
       #idx = radios.length - 1
-      #$element[0].setAttribute "idx", idx
+      #iElement[0].setAttribute "idx", idx
       setMPValue = (value) ->
-        inputelm=$element.find("input")
+        inputelm=iElement.find("input")
         if inputelm and value is inputelm[0].value
           inputelm[0].checked=true
           setTimeout (->
             $(document).foundation "forms"
           ), 0
 
-      setMPValue $scope.mpSelected
+      setMPValue scope.mpSelected
       
-      $element.bind "change", radioClick
-   
-
-    ]
-    link: (scope, iElement, iAttrs, $timeout) ->
-      ($scope, iElement, iAttrs, controller) ->
+      iElement.bind "change", radioClick
+  
 
   directiveDefinitionObject
 
@@ -777,7 +700,7 @@ mpradioDirective = ($parse, $compile, $timeout) ->
 #  mp-checked-value
 #  mp-unchecked-value
 #  
-mpcheckboxDirective = ($parse, $compile, $timeout) ->
+mpcheckboxDirective = ($parse, $compile, $timeout, mpF4Helper) ->
   directiveDefinitionObject =
     scope:
       mpChecked: "="
@@ -795,33 +718,35 @@ mpcheckboxDirective = ($parse, $compile, $timeout) ->
     replace: true
     transclude: false
     restrict: "EA"
-    controller: ["$scope", "$element", "$attrs", "$transclude", "$timeout", "radioGlobalService", "mpF4Helper", ($scope, $element, $attrs, $transclude, $timeout, radioGlobalService, mpF4Helper) ->
+    controller: ["$scope", "$element", "$attrs", "$transclude", "$timeout", "radioGlobalService", ($scope, $element, $attrs, $transclude, $timeout, radioGlobalService) ->
+    ]
+    link: (scope, iElement, iAttrs) ->
       uniqAId = mpF4Helper.getRandomName("clearing_")
       divUId = mpF4Helper.getRandomName("clearingdiv_")
       checkValue = true
       uncheckValue = false
-      checkValue = $scope.mpCheckedValue  if mpF4Helper.type($scope.mpCheckedValue) isnt "undefined"
-      uncheckValue = $scope.mpUncheckedValue  if mpF4Helper.type($scope.mpUncheckedValue) isnt "undefined"
-      if angular.isUndefined($scope.tipTitle)
+      checkValue = scope.mpCheckedValue  if mpF4Helper.type(scope.mpCheckedValue) isnt "undefined"
+      uncheckValue = scope.mpUncheckedValue  if mpF4Helper.type(scope.mpUncheckedValue) isnt "undefined"
+      if angular.isUndefined(scope.tipTitle)
         tipTitle=""
       else
-        tipTitle=$scope.tipTitle
-      if angular.isUndefined($scope.tipClass)
+        tipTitle=scope.tipTitle
+      if angular.isUndefined(scope.tipClass)
         tipClass="has-tip"
       else
-        tipClass=$scope.tipClass
-      if angular.isUndefined($scope.mpLeftLabel)
+        tipClass=scope.tipClass
+      if angular.isUndefined(scope.mpLeftLabel)
         leftLabel=""
       else
-        leftLabel=$scope.mpLeftLabel
-      if angular.isUndefined($scope.mpRightLabel)
+        leftLabel=scope.mpLeftLabel
+      if angular.isUndefined(scope.mpRightLabel)
         rightLabel=""
       else
-        rightLabel=$scope.mpRightLabel
-      if angular.isUndefined($scope.mpValue)
+        rightLabel=scope.mpRightLabel
+      if angular.isUndefined(scope.mpValue)
         mpValue=""
       else
-        mpValue=$scope.mpValue
+        mpValue=scope.mpValue
 
       makeTemplate = (id,lLabel,rLabel,tipC,tipT,value,disabled,checked,element,replace)->
         #element[0].removeAttribute("mp-radio")
@@ -854,17 +779,17 @@ mpcheckboxDirective = ($parse, $compile, $timeout) ->
           template1 = template1.replace("{2}", 'title="' + tipT + '"')
 
         if !replace
-          $element.append($compile(template1)($scope))
+          iElement.append($compile(template1)(scope))
         else
-          $element.find("div").remove()
-          $element.append $compile(template1)($scope)
+          iElement.find("div").remove()
+          iElement.append $compile(template1)(scope)
         setTimeout (->
           $(document).foundation "forms"
         ), 0
 
       setValue = (value) ->
-        if mpF4Helper.type($scope.mpCheckedValue) isnt "undefined"
-          input = $element.find('input')
+        if mpF4Helper.type(scope.mpCheckedValue) isnt "undefined"
+          input = iElement.find('input')
           if value is checkValue
             input[0].checked=true
           else
@@ -873,83 +798,33 @@ mpcheckboxDirective = ($parse, $compile, $timeout) ->
             $(document).foundation "forms"
           ), 0
 
-      #setValue $scope.mpChecked
+      #setValue scope.mpChecked
 
       checkboxClick = (ctrl) ->
-        $scope.$apply ->
-          input=$element.find("input")
+        scope.$apply ->
+          input=iElement.find("input")
       
           if angular.isDefined(input[0].checked) and input[0].checked
-            $scope.mpChecked = checkValue
+            scope.mpChecked = checkValue
           else
-            $scope.mpChecked = uncheckValue
+            scope.mpChecked = uncheckValue
 
 
-      $scope.$watch "mpChecked", (newValue, oldValue) ->
+      scope.$watch "mpChecked", (newValue, oldValue) ->
         setValue newValue
 
-      disabled=angular.isDefined($element[0].disabled)
-      mpValue=$element[0].getAttribute("mp-value")
+      disabled=angular.isDefined(iElement[0].disabled)
+      mpValue=iElement[0].getAttribute("mp-value")
       checked=false
-      if mpValue == $scope.mpSelected
+      if mpValue == scope.mpSelected
         checked=true
-      if $element[0].id isnt ""
-        $attrs.mpId=$element[0].id
-        $element[0].id=''
-      makeTemplate($attrs.mpId,leftLabel,rightLabel,tipClass,tipTitle,mpValue,disabled,checked,$element,true)
+      if iElement[0].id isnt ""
+        iAttrs.mpId=iElement[0].id
+        iElement[0].id=''
+      makeTemplate(iAttrs.mpId,leftLabel,rightLabel,tipClass,tipTitle,mpValue,disabled,checked,iElement,true)
   
-      $element.bind "change", checkboxClick
-    ]
-    link: (scope, iElement, iAttrs, $timeout) ->
-      ($scope, iElement, iAttrs, controller) ->
-
-  directiveDefinitionObject
-
-mpcheckboxDirective1 = ($parse, $compile, $timeout) ->
-  directiveDefinitionObject =
-    scope:
-      mpChecked: "="
-      mpCheckedValue: "@"
-      mpUncheckedValue: "@"
-
-    priority: 1000
-    replace: false
-    transclude: true
-    restrict: "A"
-    controller: ["$scope", "$element", "$attrs", "$transclude", "$timeout", "radioGlobalService", "mpF4Helper", ($scope, $element, $attrs, $transclude, $timeout, radioGlobalService, mpF4Helper) ->
-      uniqAId = mpF4Helper.getRandomName("clearing_")
-      divUId = mpF4Helper.getRandomName("clearingdiv_")
-      checkValue = true
-      uncheckValue = false
-      checkValue = $scope.mpCheckedValue  if mpF4Helper.type($scope.mpCheckedValue) isnt "undefined"
-      uncheckValue = $scope.mpUncheckedValue  if mpF4Helper.type($scope.mpUncheckedValue) isnt "undefined"
-      setValue = (value) ->
-        if mpF4Helper.type($scope.mpCheckedValue) isnt "undefined"
-          if value is checkValue
-            $element[0].checked=true
-          else
-            delete $element[0].checked  if mpF4Helper.type($element[0].checked) isnt "undefined"
-          setTimeout (->
-            $(document).foundation "forms"
-          ), 0
-
-      setValue $scope.mpChecked
-      checkboxClick = (ctrl) ->
-        $scope.$apply ->
-          if ctrl.currentTarget.checked
-            $scope.mpChecked = checkValue
-          else
-            $scope.mpChecked = uncheckValue
-
-
-      $scope.$watch "mpChecked", (newValue, oldValue) ->
-        setValue newValue
-
-      $element.bind "change", checkboxClick
-    ]
-    link: (scope, iElement, iAttrs, $timeout) ->
-      ($scope, iElement, iAttrs, controller) ->
-
+      iElement.bind "change", checkboxClick
+    
   directiveDefinitionObject
 
 #
@@ -958,7 +833,7 @@ mpcheckboxDirective1 = ($parse, $compile, $timeout) ->
 #  mp-checked-value
 #  mp-unchecked-value
 #  
-mpswitchDirective = ($parse, $compile, $timeout) ->
+mpswitchDirective = ($parse, $compile, $timeout, mpF4Helper) ->
  
   directiveDefinitionObject =
     scope:
@@ -975,29 +850,31 @@ mpswitchDirective = ($parse, $compile, $timeout) ->
     transclude: false
     restrict: "E"
     controller: ["$scope", "$element", "$attrs", "$transclude", "$timeout", "radioGlobalService", "mpF4Helper", ($scope, $element, $attrs, $transclude, $timeout, radioGlobalService, mpF4Helper) ->
+      
+    ]
+    link: (scope, iElement, iAttrs) ->
       uniqAId = mpF4Helper.getRandomName("x")
       uniqName = "switch-" + uniqAId
       uniqId1 = uniqAId
       uniqId2 = uniqAId + "1"
-      if angular.isUndefined($scope.tipTitle)
+      if angular.isUndefined(scope.tipTitle)
         tipTitle=""
       else
-        tipTitle=$scope.tipTitle
-      if angular.isUndefined($scope.tipClass)
+        tipTitle=scope.tipTitle
+      if angular.isUndefined(scope.tipClass)
         tipClass="has-tip"
       else
-        tipClass=$scope.tipClass
-      if angular.isUndefined($scope.mpClass)
+        tipClass=scope.tipClass
+      if angular.isUndefined(scope.mpClass)
         mpClass = "switch"
       else
-        mpClass = $scope.mpClass
+        mpClass = scope.mpClass
       checkValue = "ON"
       uncheckValue = "OFF"
-      checkValue = $scope.mpCheckedValue  if angular.isDefined($scope.mpCheckedValue)
-      uncheckValue = $scope.mpUncheckedValue  if angular.isDefined($scope.mpUncheckedValue)
+      checkValue = scope.mpCheckedValue  if angular.isDefined(scope.mpCheckedValue)
+      uncheckValue = scope.mpUncheckedValue  if angular.isDefined(scope.mpUncheckedValue)
       makeTemplate = (unCheckV, checkV, defaultV, tipC,tipT,replace) ->
-        line1 = ""
-        
+        line1 = ""  
         if tipT == ""
           line1 = "<div>"
         else
@@ -1032,50 +909,44 @@ mpswitchDirective = ($parse, $compile, $timeout) ->
         line1 = line1.replace("{11}", uniqId2)
         line1 = line1.replace("{12}", checkV)
         unless replace
-          $element.append $compile(line1)($scope)
+          iElement.append $compile(line1)(scope)
         else
-          $element.find("div").remove()
-          $element.append $compile(line1)($scope)
+          iElement.find("div").remove()
+          iElement.append $compile(line1)(scope)
         setTimeout (->
           $(document).foundation "forms"
         ), 0
 
-      makeTemplate uncheckValue, checkValue, $scope.mpChecked,tipClass,tipTitle, false
-      $scope.$watch "mpChecked", (newValue, oldValue) ->
+      makeTemplate uncheckValue, checkValue, scope.mpChecked,tipClass,tipTitle, false
+      scope.$watch "mpChecked", (newValue, oldValue) ->
         makeTemplate uncheckValue, checkValue, newValue, tipClass, tipTitle, true
 
       checkboxClick = (ctrl) ->
-        $scope.$apply ->
-          input = $element.find("input")
+        scope.$apply ->
+          input = iElement.find("input")
           soff = input[0].checked
           son = input[1].checked
-          $scope.mpChecked = uncheckValue  if mpF4Helper.type(soff) isnt "undefined" and soff is true
-          $scope.mpChecked = checkValue  if mpF4Helper.type(son) isnt "undefined" and son is true
-        
-    
+          scope.mpChecked = uncheckValue  if mpF4Helper.type(soff) isnt "undefined" and soff is true
+          scope.mpChecked = checkValue  if mpF4Helper.type(son) isnt "undefined" and son is true
 
-      $element.bind "change", checkboxClick
+      iElement.bind "change", checkboxClick
       labelClick = (ctrl, value) ->
         if value
-          $scope.mpChecked = checkValue
+          scope.mpChecked = checkValue
         else
-          $scope.mpChecked = uncheckValue
-    ]
-    link: (scope, iElement, iAttrs, $timeout) ->
+          scope.mpChecked = uncheckValue
+
       setTimeout (->
         $(document).foundation "forms"
       ), 0
-      ($scope, iElement, iAttrs, controller) ->
-
+    
   directiveDefinitionObject
 
 myF4_DirectiveApp.directive "mpDropdown", mpdropdownDirective
 myF4_DirectiveApp.directive "mpDropdownContent", mpdropdownContentDirective
 myF4_DirectiveApp.directive "mpClearing", mpclearingDirective
 myF4_DirectiveApp.directive "mpAlertBox", mpalertBoxesDirective
-myF4_DirectiveApp.directive "mpSection", mpsectionDirective
 myF4_DirectiveApp.directive "mpSectionContainer", mpsectionContainerDirective
 myF4_DirectiveApp.directive "mpRadio", mpradioDirective
 myF4_DirectiveApp.directive "mpCheckbox", mpcheckboxDirective
-myF4_DirectiveApp.directive "mpCheckbox1", mpcheckboxDirective1
 myF4_DirectiveApp.directive "mpSwitch", mpswitchDirective
