@@ -942,6 +942,115 @@ mpswitchDirective = ($parse, $compile, $timeout, mpF4Helper) ->
     
   directiveDefinitionObject
 
+#
+#  Checkbox directive mp-checkbox
+#  mp-checked
+#  mp-checked-value
+#  mp-unchecked-value
+#  
+mppaginationDirective = ($parse, $compile, $timeout, mpF4Helper) ->
+ 
+  directiveDefinitionObject =
+    scope:
+      mpStartPage: "@"
+      mpEndPage: '@'
+      mpGoPageFn: '@'
+      mpCurrentPage: '@'
+      mpGoPrevFn: '@'
+      mpGoNextFn: '@'
+      mpCentered: '@'
+      mpNumItemShow: '@'
+    priority: 1000
+    replace: true
+    template: '<div></div>'
+    transclude: false
+    restrict: "E"
+    controller: ["$scope", "$element", "$attrs", "$transclude", "$timeout", "mpF4Helper", ($scope, $element, $attrs, $transclude, $timeout, mpF4Helper) ->
+      
+    ]
+    link: (scope, iElement, iAttrs) ->
+      if angular.isUndefined(scope.mpGoNextFn)
+        goNextFn=''
+      else
+        goNextFn=scope.mpGoNextFn
+      if angular.isUndefined(scope.mpGoPrevFn)
+        goPrevFn=''
+      else
+        goPrevFn=scope.mpGoPrevFn
+      
+      if angular.isUndefined(scope.mpStartPage)
+        startPage=1
+      else
+        startPage=parseInt(scope.mpStartPage)
+      if angular.isUndefined(scope.mpEndPage)
+        endPage=10
+      else
+        endPage=parseInt(scope.mpEndPage)
+      if angular.isUndefined(scope.mpCurrentPage)
+        currentPage=1
+      else
+        currentPage=parseInt(scope.mpCurrentPage)
+      if angular.isDefined(iAttrs.mpCentered)
+        centered=true
+      else
+        centered=false
+      if angular.isUndefined(scope.mpGoPageFn)
+        goPageFn=""
+      else
+        goPageFn=scope.mpGoPageFn
+      if angular.isUndefined(scope.mpNumItemShow)
+        numItemShow=endPage
+      else
+        numItemShow=parseInt(scope.mpNumItemShow)
+      makeTemplate = ()->
+        line1 = ''
+        if centered
+          line1=line1 + '<div class="pagination-centered">'
+        line1 = line1 + '<ul class="pagination">'
+        if goPrevFn == ""
+          sGoPrevFn = ''
+        else
+          sGoPrevFn = goPrevFn + '(' + startPage + ',this)'
+        if goNextFn == ""
+          sGoNextFn = ''
+        else
+          sGoNextFn = goNextFn + '(' + endPage + ',this)'
+        
+        line1 = line1 + '<li class="arrow"><a href="" ng-click="' + sGoPrevFn + '">&laquo;</a></li>'
+        i=1
+        ii=0
+        while i<=numItemShow
+          breakNum=Math.ceil(numItemShow/2)
+          sclass=""
+          if i <= breakNum
+            pageNo=i
+          else
+            pageNo = endPage - breakNum + 1 + ii
+            ++ii
+          if i != breakNum
+            if pageNo == currentPage
+              sclass='class="current"'
+            if goPageFn == ''
+              sGoPageFn = ''
+            else
+              sGoPageFn = goPageFn + '(' + pageNo + ',this)'
+            line1 = line1 + '<li ' + sclass + ' ><a href="" ng-click="' + sGoPageFn + '">' + 
+            pageNo + 
+            '</a></li>'
+          else
+            line1 = line1 + '<li class="unavailable"><a href="">&hellip; </a></li>'
+
+          ++i
+
+        line1 = line1 + '<li class="arrow"><a href="" ng-click="' + sGoNextFn + '">&raquo;</a></li>'
+        if centered
+          line1 = line1 + "</div>"
+        return line1
+      template=makeTemplate()
+      iElement.append($compile(template)(scope))
+  directiveDefinitionObject
+
+
 myF4_DirectiveApp.directive "mpDropdown", mpdropdownDirective
 myF4_DirectiveApp.directive "mpDropdownContent", mpdropdownContentDirective
 myF4_DirectiveApp.directive "mpClearing", mpclearingDirective
@@ -950,3 +1059,4 @@ myF4_DirectiveApp.directive "mpSectionContainer", mpsectionContainerDirective
 myF4_DirectiveApp.directive "mpRadio", mpradioDirective
 myF4_DirectiveApp.directive "mpCheckbox", mpcheckboxDirective
 myF4_DirectiveApp.directive "mpSwitch", mpswitchDirective
+myF4_DirectiveApp.directive "mpPagination", mppaginationDirective
