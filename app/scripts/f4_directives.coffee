@@ -793,7 +793,7 @@ mpcheckboxDirective = ($parse, $compile, $timeout, mpF4Helper) ->
           if value is checkValue
             input[0].checked=true
           else
-            delete input[0].checked  if mpF4Helper.type(input[0].checked) isnt "undefined"
+            input[0].checked=false
           setTimeout (->
             $(document).foundation "forms"
           ), 0
@@ -812,7 +812,7 @@ mpcheckboxDirective = ($parse, $compile, $timeout, mpF4Helper) ->
 
       scope.$watch "mpChecked", (newValue, oldValue) ->
         setValue newValue
-
+  
       disabled=angular.isDefined(iElement[0].disabled)
       mpValue=iElement[0].getAttribute("mp-value")
       checked=false
