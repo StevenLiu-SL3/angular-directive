@@ -1010,13 +1010,13 @@ mppaginationDirective = ($parse, $compile, $timeout, mpF4Helper) ->
         if goPrevFn == ""
           sGoPrevFn = ''
         else
-          sGoPrevFn = goPrevFn + '(' + startPage + ',this)'
+          sGoPrevFn = '_goPrevFn(' + startPage + ',this)'
         if goNextFn == ""
           sGoNextFn = ''
         else
-          sGoNextFn = goNextFn + '(' + endPage + ',this)'
+          sGoNextFn =  '_goNextFn(' + endPage + ',this)'
         
-        line1 = line1 + '<li class="arrow"><a href="" ng-click="' + sGoPrevFn + '">&laquo;</a></li>'
+        line1 = line1 + '<li class="arrow"><a data-ng-href="" data-ng-click="' + sGoPrevFn + '">&laquo;</a></li>'
         i=1
         ii=0
         while i<=numItemShow
@@ -1033,8 +1033,8 @@ mppaginationDirective = ($parse, $compile, $timeout, mpF4Helper) ->
             if goPageFn == ''
               sGoPageFn = ''
             else
-              sGoPageFn = goPageFn + '(' + pageNo + ',this)'
-            line1 = line1 + '<li ' + sclass + ' ><a href="" ng-click="' + sGoPageFn + '">' + 
+              sGoPageFn =  '_goPageFn(' + pageNo + ',this)'
+            line1 = line1 + '<li ' + sclass + ' ><a data-ng-href="" ng-click="' + sGoPageFn + '">' + 
             pageNo + 
             '</a></li>'
           else
@@ -1042,10 +1042,20 @@ mppaginationDirective = ($parse, $compile, $timeout, mpF4Helper) ->
 
           ++i
 
-        line1 = line1 + '<li class="arrow"><a href="" ng-click="' + sGoNextFn + '">&raquo;</a></li>'
+        line1 = line1 + '<li class="arrow"><a data-href="" data-ng-click="' + sGoNextFn + '">&raquo;</a></li>'
         if centered
           line1 = line1 + "</div>"
         return line1
+      scope._goPageFn = (pageNo)->
+        scmd='scope.$parent.' + goPageFn + '(' + pageNo + ',this)'
+        eval(scmd)
+      scope._goPrevFn = (pageNo)->
+        scmd='scope.$parent.' + goPrevFn + '(' + pageNo + ',this)'
+        eval(scmd)
+      scope._goNextFn = (pageNo)->
+        scmd='scope.$parent.' + goNextFn + '(' + pageNo + ',this)'
+        eval(scmd)
+
       template=makeTemplate()
       iElement.append($compile(template)(scope))
   directiveDefinitionObject
